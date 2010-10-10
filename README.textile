@@ -18,8 +18,8 @@ I've used a simple presentation with some transformations, images, embedded HTML
 
 =. | Browser|\2. version| comment|
 =. |Firefox|\2{background:green;}. 3.0+| No problems on the SVG, MathML not fully supported|
-=. |Opera|{background:green;}\2. 9.0+| No problems on the SVG, except foreignObjects |
-=. |Chrome|{background:green;}\2. 0.2+| No problems on the SVG, MathML not fully supported|
+=. |Opera|\2{background:green;}. 9.0+| No problems on the SVG, except foreignObjects |
+=. |Chrome|\2{background:green;}. 0.2+| No problems on the SVG, MathML not fully supported|
 =. |IE|{background:red;} 8|{background:yellow;} 9(?)| // no comment|
 
 h2. To do
