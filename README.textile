@@ -1,6 +1,7 @@
 h1. dizzy.js
+
 dizzy.js enables you to create non-linear presentations similiar to 
-[Prezi](http://prezi.com "Prezi.com"), without using Flash or some other proprietary technology.
+"Prezi":http://prezi.com, without using Flash or some other proprietary technology.
 
 h2. Usage
 
@@ -9,17 +10,16 @@ h3. SVG
 h3. Javascript
 
 h2. Browser support
+
 This table sums up some results I got from testing presentations with different browsers/versions.
 Support mainly depends on the used rendering-engine for SVG (the JS part is pretty well supported).
 I've used a simple presentation with some transformations, images, embedded HTML and MathML for testing.
-On the SVG part
 
-Everything else (like 
 
-=. | Browser|\2 version| comment|
-=. |Firefox|\2{background:green;} 3.0+| No problems on the SVG, MathML not fully supported|
-=. |Opera|\2{background:green;} 9.0+| No problems on the SVG, except foreignObjects |
-=. |Chrome|\2{background:green;} 0.2+| No problems on the SVG, MathML not fully supported|
+=. | Browser|\2. version| comment|
+=. |Firefox|{background:green;}\2. 3.0+| No problems on the SVG, MathML not fully supported|
+=. |Opera|{background:green;}\2. 9.0+| No problems on the SVG, except foreignObjects |
+=. |Chrome|{background:green;}\2. 0.2+| No problems on the SVG, MathML not fully supported|
 =. |IE|{background:red;} 8|{background:yellow;} 9(?)| // no comment|
 
 h2. To do
