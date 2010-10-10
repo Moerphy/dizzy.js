@@ -23,3 +23,7 @@ I've used a simple presentation with some transformations, images, embedded HTML
 =. |IE|{background:red;}. 8|{background:yellow;}. 9(?)| // no comment|
 
 h2. To do
+
+h2. License
+
+dizzy.js is licensed under the terms of the MIT License, see "LICENSE" file in repository.
