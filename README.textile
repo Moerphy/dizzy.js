@@ -15,14 +15,13 @@ This table sums up some results I got from testing presentations with different 
 Support mainly depends on the used rendering-engine for SVG (the JS part is pretty well supported).
 I've used a simple presentation with some transformations, images, embedded HTML and MathML for testing.
 
+See "Browser support":http://github.com/Moerphy/dizzy.js/wiki/Browser-support in the wiki
 
-=. | Browser|\2. version| comment|
-=. |Firefox|\2{background:green;}. 3.0+| No problems on the SVG, MathML not fully supported|
-=. |Opera|\2{background:green;}. 9.0+| No problems on the SVG, except foreignObjects |
-=. |Chrome|\2{background:green;}. 0.2+| No problems on the SVG, MathML not fully supported|
-=. |IE|{background:red;}. 8|{background:yellow;}. 9(?)| // no comment|
 
 h2. To do
+- Bugfixing
+- Zooming and panning
+- moar jQuery
 
 h2. License
 
