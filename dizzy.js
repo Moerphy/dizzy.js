@@ -11,6 +11,8 @@ function Dizzy(container, transformDuration) {
 	// time the animated transformation takes (in ms)
 	this.transformTime = (typeof(transformDuration)!='undefined')?transformDuration:1000;
 	this.overviewMode = false;
+	// determines how much zooming is made on zoom() call. 1 = none, 2 = double/halve zoomfactor, etc..
+	this.zoomFactor = 2;
 }  
 
 /**
@@ -144,13 +146,49 @@ Dizzy.prototype.updateDisplay =  function(){
 		
 	}	
 }
+/**
+ * Zooms in/out one unit, based on the given argument. 
+ * @args zoomInOut -1 for zooming out one unit, +1 for zooming in
+ */
+Dizzy.prototype.zoom = function(zoomInOut){
+	// (x+1)/2 + unit
+	//convert bipolar value ({-1,+1}) to zoom value ({ 1/zoomFactor, zoomFactor })
+	//because I am to tired to think of a nice mathematical way to do this now.. this has to do..
+	if( zoomInOut > 0 ){
+		zoomInOut = this.zoomFactor;
+	}else{
+		zoomInOut = 1/this.zoomFactor;
+	}
+	zoomInOut = zoomInOut;
+	
+	//this.freeTransform.setScale(1,1);
+	var newMatrix = $(this.canvas)[0].transform.baseVal.consolidate().matrix;
+	newMatrix = newMatrix.scale(zoomInOut);
+
+	
+	$(this.canvas).animate({svgTransform:  'matrix('+newMatrix.a+' '+newMatrix.b+' '+newMatrix.c+' '+newMatrix.d+' '+newMatrix.e+' '+newMatrix.f+')'}, this.transformTime);
+}
+
+/**
+ * Pans the canvas, based on the given argument. 
+ */
+Dizzy.prototype.pan = function(deltaX, deltaY){
+	//this.freeTransform.setScale(1,1);
+	var newMatrix = $(this.canvas)[0].transform.baseVal.consolidate().matrix;
+	
+	// convert delta values (because SVG works with a relative width)
+	//deltaX = some smart math thingy
+	//deltaY = see above
+	
+	newMatrix = newMatrix.translate(deltaX, deltaY);
+
+	
+	$(this.canvas).animate({svgTransform:  'matrix('+newMatrix.a+' '+newMatrix.b+' '+newMatrix.c+' '+newMatrix.d+' '+newMatrix.e+' '+newMatrix.f+')'}, this.transformTime);
+}
 
 
 
 
 
 
-
-
-
-//I'm sorry, but our princess is in another castle!
+// These are not the droids you're looking for..

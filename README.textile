@@ -19,8 +19,9 @@ See "Browser support":http://github.com/Moerphy/dizzy.js/wiki/Browser-support in
 
 
 h2. To do
+
 - Bugfixing
-- Zooming and panning
+- -Zooming- and panning
 - moar jQuery
 
 h2. License
