@@ -3,16 +3,26 @@
  * Initializes dizzy object with the given selector as container. 
  * On calling load(), an SVG file can be load into the container.
  */
-function Dizzy(container, transformDuration) { 
-	// container element from html
-	this.container = container; 
-	 // number of group that is show right now
-	this.groupNum = -1;
-	// time the animated transformation takes (in ms)
-	this.transformTime = (typeof(transformDuration)!='undefined')?transformDuration:1000;
-	this.overviewMode = false;
-	// determines how much zooming is made on zoom() call. 1 = none, 2 = double/halve zoomfactor, etc..
-	this.zoomFactor = 2;
+function Dizzy(container, options) { 
+		// default values for variables..
+		// container element from html
+		this.container = container; 
+		 // number of group that is show right now
+		this.groupNum = -1;
+		// time the animated transformation takes (in ms)
+		this.transformTime = 1000;
+		// determines how much zooming is made on zoom() call. 1 = none, 2 = double/halve zoomfactor, etc..
+		this.zoomFactor = 2;
+		// determines if canvas is pannable
+		this.pannable = true;
+		// determines if canvas is zoomable
+		this.zoomable = true;
+		
+		for( opt in options ){
+			if( typeof opt != 'function' && typeof this[opt] != 'undefined' ){
+				this[opt] = options[opt];
+			}
+		}
 }  
 
 /**
@@ -26,13 +36,24 @@ Dizzy.prototype.load = function(url) {
 			onLoad: (function(svgw){
 				os.svg = $(os.container).svg('get');
 				os.canvas = $('#canvas', os.svg.root() );
+				
+				if( os.pannable ){
+					os.isPanning = false;
+					$(os.svg.root()).mousedown($.proxy(os.startpanning, os));
+					$(os.svg.root()).mousemove($.proxy(os.panning, os));
+					$(os.svg.root()).mouseup($.proxy(os.endpanning, os));
+				}
+				
+				
 				os.show(0);
 				})
 		});
 
-	//animate({svgTransform:  'rotate(45,20,15)'}, 2000);
+	
+
 	return this;
 }; 
+
 
 /**
  * Checks if there is a group defined with the given number
@@ -46,6 +67,10 @@ Dizzy.prototype.hasGroupNumber = function(number){
  * 
  */
 Dizzy.prototype.getGroups = function(number){
+	// maybe some better day I will be able to select like this:
+	// g[dizzy:number~= 42]
+	// see: http://www.w3.org/TR/SVG/extend.html#PrivateElementsAndAttribute
+	// browser support: meh.
 	return $('g.group_'+number, this.svg.root());
 }
 /**
@@ -86,6 +111,7 @@ Dizzy.prototype.show =  function(number){
 
 	return this;
 }
+
 
 
 /**
@@ -151,39 +177,83 @@ Dizzy.prototype.updateDisplay =  function(){
  * @args zoomInOut -1 for zooming out one unit, +1 for zooming in
  */
 Dizzy.prototype.zoom = function(zoomInOut){
-	// (x+1)/2 + unit
-	//convert bipolar value ({-1,+1}) to zoom value ({ 1/zoomFactor, zoomFactor })
-	//because I am to tired to think of a nice mathematical way to do this now.. this has to do..
-	if( zoomInOut > 0 ){
-		zoomInOut = this.zoomFactor;
-	}else{
-		zoomInOut = 1/this.zoomFactor;
+	if( this.zoomable ){
+		//because I am to tired to think of a nice mathematical way to do this now.. this has to do..
+		if( zoomInOut > 0 ){
+			zoomInOut = this.zoomFactor;
+		}else{
+			zoomInOut = 1/this.zoomFactor;
+		}
+		zoomInOut = zoomInOut;
+		
+		//this.freeTransform.setScale(1,1);
+	
+		var newMatrix = $(this.canvas, this.svg.root())[0].transform.baseVal.consolidate().matrix;
+		newMatrix = newMatrix.scale(zoomInOut);
+	
+		
+		$(this.canvas).animate({svgTransform:  'matrix('+newMatrix.a+' '+newMatrix.b+' '+newMatrix.c+' '+newMatrix.d+' '+newMatrix.e+' '+newMatrix.f+')'}, this.transformTime);
 	}
-	zoomInOut = zoomInOut;
+}
+/**
+ * Converts X/Y values from the mouseevent to SVG-coordinates. 
+ * Necessary because SVG can use a relative coordinate space and rotation/scaling.
+ */
+Dizzy.prototype.convertAbsoluteToRelative = function(x, y){
+	var canvasMatrix = $(this.canvas)[0].transform.baseVal.consolidate().matrix;
+	var svgPoint = this.svg.svg().createSVGPoint();
+	svgPoint.x = x;
+	svgPoint.y = y;
+	svgPoint = svgPoint.matrixTransform(canvasMatrix.inverse());
 	
-	//this.freeTransform.setScale(1,1);
-	var newMatrix = $(this.canvas)[0].transform.baseVal.consolidate().matrix;
-	newMatrix = newMatrix.scale(zoomInOut);
+	return svgPoint;
+}
 
+var pan = {};
+/**
+ * starts the panning, saves current mouseposition
+ */
+Dizzy.prototype.startpanning = function(ev){
+	this.mouseClicked = true;
 	
-	$(this.canvas).animate({svgTransform:  'matrix('+newMatrix.a+' '+newMatrix.b+' '+newMatrix.c+' '+newMatrix.d+' '+newMatrix.e+' '+newMatrix.f+')'}, this.transformTime);
+	var canvasMatrix = $(this.canvas)[0].transform.baseVal.consolidate().matrix;
+	
+	var svgPoint = this.convertAbsoluteToRelative(ev.pageX, ev.pageY);
+	
+	pan.x = svgPoint.x;
+	pan.y = svgPoint.y;
 }
 
 /**
- * Pans the canvas, based on the given argument. 
+ * Pans the canvas by the offset from pan/ev.pageXY. Usually called as mousemoved()
  */
-Dizzy.prototype.pan = function(deltaX, deltaY){
-	//this.freeTransform.setScale(1,1);
-	var newMatrix = $(this.canvas)[0].transform.baseVal.consolidate().matrix;
-	
-	// convert delta values (because SVG works with a relative width)
-	//deltaX = some smart math thingy
-	//deltaY = see above
-	
-	newMatrix = newMatrix.translate(deltaX, deltaY);
+Dizzy.prototype.panning = function(ev){
+	if( this.mouseClicked ){
+		var canvasMatrix = $(this.canvas)[0].transform.baseVal.consolidate().matrix;
+		
+		// convert delta values (because SVG works with relative dimensions + rotation + scale)
+		var svgPoint = this.convertAbsoluteToRelative(ev.pageX, ev.pageY);
+		var moveMe = {};
+		moveMe.x = svgPoint.x - pan.x;
+		moveMe.y = svgPoint.y -pan.y;
 
+		canvasMatrix = $(this.canvas)[0].transform.baseVal.consolidate().matrix;
+		canvasMatrix = canvasMatrix.translate( moveMe.x, moveMe.y);
+		var newMatrix = canvasMatrix;
+		$(this.canvas).attr('transform','matrix('+newMatrix.a+' '+newMatrix.b+' '+newMatrix.c+' '+newMatrix.d+' '+newMatrix.e+' '+newMatrix.f+')');
 	
-	$(this.canvas).animate({svgTransform:  'matrix('+newMatrix.a+' '+newMatrix.b+' '+newMatrix.c+' '+newMatrix.d+' '+newMatrix.e+' '+newMatrix.f+')'}, this.transformTime);
+		svgPoint = this.convertAbsoluteToRelative(ev.pageX, ev.pageY);
+		pan.x = svgPoint.x;
+		pan.y = svgPoint.y;
+	
+	}
+
+}
+/**
+ * Ends the panning, usually called as mouseup()
+ */
+Dizzy.prototype.endpanning = function(ev){
+	this.mouseClicked = false;
 }
 
 
@@ -191,4 +261,7 @@ Dizzy.prototype.pan = function(deltaX, deltaY){
 
 
 
-// These are not the droids you're looking for..
+// Longcat is loooooooooooooooooooooooooooooooooooooooooooooooo..
+// ..oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo..
+// ..oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo..
+// ..ng.
