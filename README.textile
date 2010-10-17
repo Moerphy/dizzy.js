@@ -9,11 +9,14 @@ h3. SVG
 
 h3. Javascript
 
-h2. Browser support
+Just create a new Dizzy object and pass a selector for a dom node thats used as container.
+var dizz = new Dizzy('#dizzy');
+You can also pass options to the Dizzy() function. See the wiki for a description of all options.
+var dizz = new Dizzy('#dizzy', {pannable: true, transformTime: 1000});
 
-This table sums up some results I got from testing presentations with different browsers/versions.
-Support mainly depends on the used rendering-engine for SVG (the JS part is pretty well supported).
-I've used a simple presentation with some transformations, images, embedded HTML and MathML for testing.
+To navigate through the presentation just call the methods next(), previous() or show(n) on the dizzy object.
+
+h2. Browser support
 
 See "Browser support":http://github.com/Moerphy/dizzy.js/wiki/Browser-support in the wiki
 
@@ -21,7 +24,7 @@ See "Browser support":http://github.com/Moerphy/dizzy.js/wiki/Browser-support in
 h2. To do
 
 - Bugfixing
-- -Zooming- and panning
+- -Zooming and panning-
 - moar jQuery
 
 h2. License
