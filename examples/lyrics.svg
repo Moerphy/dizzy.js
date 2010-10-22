@@ -1,0 +1,124 @@
+<?xml version="1.0"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+         "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     viewBox="0 0 1000 1000">
+
+     <g  id="canvas" stroke="black" stroke-width="2px" fill="darkgrey">
+		
+		<!-- 	if the group wouldn't be scaled down, 
+				text would be centered without translate() -->
+		<g class="group group_1 group_10" transform="translate(250 250) scale(0.5)">
+			
+			<text 
+				xml:space="preserve"
+				text-anchor="middle" 
+				font-size="150"
+				x="500"
+				y="500">
+				paniq - Elektronische Musik
+			</text>
+			
+			<!-- 	Subgroup. Is being transformed by parent (group_1) 
+					and is transforming its content itself-->
+			<g class="group group_2" transform="scale(0.25) translate(1000 1200) rotate(89)">
+				<text 
+					xml:space="preserve"
+					text-anchor="middle" 
+					font-size="75"
+					x="500"
+					y="500">
+					a dizzy.js example with lyrics to free music
+				</text>
+				
+				
+			</g>
+			
+		</g>
+		
+		<!-- Lyrics -->
+		<g transform="scale(0.25) translate(2000 1000)">
+		
+			<g class="group group_3" transform="">
+				<text 
+					xml:space="preserve"
+					text-anchor="middle" 
+					font-size="50"
+					x="500"
+					y="500">
+						Viel zu monoton, dieser gerade Beat
+				</text>
+			</g>
+			<g class="group group_4" transform="scale(0.2) translate(2500 2500) rotate(45)">
+				<text 
+					xml:space="preserve"
+					text-anchor="middle" 
+					font-size="50"
+					x="500"
+					y="500">
+						ich bin das nicht gewohnt, elektronische Musik
+				</text>
+				<g class="group group_5"  transform="scale(0.1) translate(200 4000) rotate(89)">
+					<text 
+						xml:space="preserve"
+						text-anchor="middle" 
+						font-size="50"
+						x="500"
+						y="500">
+							Das ist mir viel zu schnell, synthetisch produziert
+					</text>
+				</g>
+			</g>
+			
+			
+		</g>
+		
+		<g class="group group_6"  transform="scale(0.25) translate(500 2000)">
+			<text 
+				xml:space="preserve"
+				text-anchor="middle" 
+				font-size="50"
+				x="500"
+				y="500">
+					das klingt industriell und garnicht kultiviert
+			</text>
+		</g>
+		<g transform="scale(0.25) translate(500 2000)">
+			<g class="group group_7" transform="scale(0.5) translate(1000 600)">
+				<text 
+					xml:space="preserve"
+					text-anchor="middle" 
+					font-size="50"
+					x="500"
+					y="500">
+						Das ist mir viel zu seicht und eher primitiv
+				</text>
+			</g>
+
+			<g class="group group_8" transform="scale(0.25) translate(0 1200)">
+				<text 
+					xml:space="preserve"
+					text-anchor="middle" 
+					font-size="50"
+					x="500"
+					y="500">
+						das klingt doch alles gleich das macht mich aggressiv
+				</text>
+			</g>
+		</g>
+		
+		<g class="group group_9" transform="scale(0.01) translate(50000 50000)">
+			<text 
+				xml:space="preserve"
+				text-anchor="middle" 
+				font-size="50"
+				x="500"
+				y="500">
+					... that's enough demo for now (aka I'm too lazy to code more)
+			</text>
+		</g>
+		
+	</g>
+	
+</svg>

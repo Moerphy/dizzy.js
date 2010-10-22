@@ -1,3 +1,13 @@
+/*
+ * dizzy.js 
+ * http://murphy.metafnord.org/dizzy
+ * 
+ * Version: 0.3.1
+ * Date: 10/23/2010
+ * 
+ * licensed under the terms of the MIT License
+ * http://www.opensource.org/licenses/mit-license.html
+ */
 
 /**
  * Initializes dizzy object with the given selector as container. 
@@ -17,6 +27,8 @@ function Dizzy(container, options) {
 		this.pannable = true;
 		// determines if canvas is zoomable
 		this.zoomable = true;
+		// toggles overview mode (shows "group 0" aka the canvas"
+		this.overview = 0;
 		
 		for( opt in options ){
 			if( typeof opt != 'function' && typeof this[opt] != 'undefined' ){
@@ -37,13 +49,7 @@ Dizzy.prototype.load = function(url) {
 				os.svg = $(os.container).svg('get');
 				os.canvas = $('#canvas', os.svg.root() );
 				
-				if( os.pannable ){
-					os.isPanning = false;
-					$(os.svg.root()).mousedown($.proxy(os.startpanning, os));
-					$(os.svg.root()).mousemove($.proxy(os.panning, os));
-					$(os.svg.root()).mouseup($.proxy(os.endpanning, os));
-				}
-				
+				os.addEventHandlers();
 				
 				os.show(0);
 				})
@@ -53,7 +59,18 @@ Dizzy.prototype.load = function(url) {
 
 	return this;
 }; 
-
+/**
+ * Assigns an 
+ */
+Dizzy.prototype.addEventHandlers = function(){
+	var os = this;
+	$('.group', this.svg.root() ).click(function(ev){
+		var group = ev.currentTarget;
+		var groupMatrix = os.getTransformationMatrix(group);
+		os.transformCanvas(groupMatrix.inverse());
+		return false;
+	});
+}
 
 /**
  * Checks if there is a group defined with the given number
@@ -112,7 +129,54 @@ Dizzy.prototype.show =  function(number){
 	return this;
 }
 
+Dizzy.prototype.toggleOverview = function(){
+	var tmpNum = this.groupNum;
+	this.show(this.overview);
+	this.overview = tmpNum;
+}
 
+Dizzy.prototype.getTransformationMatrix = function(node){
+	var activeGroupTransformBase = node.transform.baseVal; // TODO multiple nodes with that class? shouldn't happen, but it will...
+	
+	if( activeGroupTransformBase.numberOfItems == 0 ){
+		 var newTransform = this.svg.root().createSVGTransform();
+		 activeGroupTransformBase.appendItem(newTransform);
+	}
+	var activeGroupTransformMatrix =  activeGroupTransformBase.consolidate().matrix;
+	// subgroups have to be "de-transformed" with the transformations of their parents
+	var parentGroups = $(node).parentsUntil('g#canvas');
+	
+	/* 
+	 * iterate over parents in the DOM until you hit the #canvas-group
+	 * multiply parent transformation matrix to undo all of them too..
+	 */
+	parentGroups.each(	function(index){
+							var parent = $(this);
+							var parentBase = parent[0].transform.baseVal;
+							if( parentBase.numberOfItems == 0 ){
+								var newTransform = this.svg.root().createSVGTransform();
+								parentBase.appendItem(newTransform);
+							}
+							var parentMatrix = parentBase.consolidate().matrix;
+							// careful with the order of operands on the multiplication
+							// matrix multiplications are not commutative!
+							activeGroupTransformMatrix = parentMatrix.multiply(activeGroupTransformMatrix);
+							
+						});
+	
+	return activeGroupTransformMatrix;
+	
+}
+/**
+ * Transforms the canvas with the given matrix and transformduration (if not passed, this.transformTime is used)
+ */
+Dizzy.prototype.transformCanvas = function(m, transformDuration){
+	if( typeof transformDuration == 'undefined'){
+		transformDuration = this.transformTime;
+	}
+	$(this.canvas).animate({svgTransform:  'matrix('+m.a+' '+m.b+' '+m.c+' '+m.d+' '+m.e+' '+m.f+')'}, transformDuration);
+	
+}
 
 /**
  * Gets the group that should be displayed and undoes the transformations that have been applied to it.
@@ -127,46 +191,18 @@ Dizzy.prototype.updateDisplay =  function(){
 		// get active group or canvas (overview)
 		if( this.groupNum == 0 ){
 			activeGroup = $('#canvas');
+			// return canvas to "normal" state
 			$(this.canvas).animate({svgTransform:  'matrix(1 0 0 1 0 0)'}, this.transformTime);
 		}else{
-			activeGroup =this.getGroups(this.groupNum);
+			activeGroup = this.getGroups(this.groupNum);
 
 			if( activeGroup.length > 0 ){
 				// get transformationmatrix (SVGMatrix class)
-				var activeGroupTransformBase = activeGroup[0].transform.baseVal; // TODO multiple nodes with that class?
-				
-				if( activeGroupTransformBase.numberOfItems == 0 ){
-					 var newTransform = this.svg.root().createSVGTransform();
-					 activeGroupTransformBase.appendItem(newTransform);
-				}
-				var activeGroupTransformMatrix = activeGroupTransformBase.consolidate().matrix;
-				
-				// subgroups have to be "de-transformed" with the transformations of their parents
-				var parentGroups = $(activeGroup[0]).parentsUntil('g#canvas');
-				
-				/* 
-				 * iterate over parents in the DOM until you hit the #canvas-group
-				 * multiply parent transformation matrix to undo all of them too..
-				 */
-				parentGroups.each(	function(index){
-										var parent = $(this);
-										var parentBase = parent[0].transform.baseVal;
-										if( parentBase.numberOfItems == 0 ){
-											var newTransform = this.svg.root().createSVGTransform();
-											parentBase.appendItem(newTransform);
-										}
-										var parentMatrix = parentBase.consolidate().matrix;
-										// careful with the order of operands on the multiplication
-										// matrix multiplications are not commutative!
-										activeGroupTransformMatrix = parentMatrix.multiply(activeGroupTransformMatrix);
-										
-									});
-				
-				
+				var activeGroupTransformMatrix = this.getTransformationMatrix(activeGroup[0]);
+
 				// multiply inverse transformation matrix on canvas (should reverse active transformation)
 				var newMatrix = activeGroupTransformMatrix.inverse();
-				
-				$(this.canvas).animate({svgTransform:  'matrix('+newMatrix.a+' '+newMatrix.b+' '+newMatrix.c+' '+newMatrix.d+' '+newMatrix.e+' '+newMatrix.f+')'}, this.transformTime);
+				this.transformCanvas(newMatrix);
 			}
 		}
 		
@@ -176,7 +212,7 @@ Dizzy.prototype.updateDisplay =  function(){
  * Zooms in/out one unit, based on the given argument. 
  * @args zoomInOut -1 for zooming out one unit, +1 for zooming in
  */
-Dizzy.prototype.zoom = function(zoomInOut){
+Dizzy.prototype.zoom = function(zoomInOut, e){
 	if( this.zoomable ){
 		//because I am to tired to think of a nice mathematical way to do this now.. this has to do..
 		if( zoomInOut > 0 ){
@@ -189,10 +225,18 @@ Dizzy.prototype.zoom = function(zoomInOut){
 		//this.freeTransform.setScale(1,1);
 	
 		var newMatrix = $(this.canvas, this.svg.root())[0].transform.baseVal.consolidate().matrix;
+		
+		// if mouse event is passed, scale with the mouseposition as center (roughly)
+		//translate( -centerX*(factor-1), -centerY*(factor-1))
+		if( typeof e != 'undefined' ){
+			var mousePoint = this.convertAbsoluteToRelative(e.pageX, e.pageY);
+			newMatrix = newMatrix.translate(-mousePoint.x*(zoomInOut-1), -mousePoint.y*(zoomInOut-1));
+		}
+		
 		newMatrix = newMatrix.scale(zoomInOut);
 	
 		
-		$(this.canvas).animate({svgTransform:  'matrix('+newMatrix.a+' '+newMatrix.b+' '+newMatrix.c+' '+newMatrix.d+' '+newMatrix.e+' '+newMatrix.f+')'}, this.transformTime);
+		this.transformCanvas(newMatrix);
 	}
 }
 /**
@@ -214,7 +258,8 @@ var pan = {};
  * starts the panning, saves current mouseposition
  */
 Dizzy.prototype.startpanning = function(ev){
-	this.mouseClicked = true;
+	// only allow mousedragging if the pannable option is set to true
+	this.mouseClicked = this.pannable;
 	
 	var canvasMatrix = $(this.canvas)[0].transform.baseVal.consolidate().matrix;
 	
@@ -261,7 +306,5 @@ Dizzy.prototype.endpanning = function(ev){
 
 
 
-// Longcat is loooooooooooooooooooooooooooooooooooooooooooooooo..
-// ..oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo..
-// ..oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo..
-// ..ng.
+
+// OHAI! IM IN YOUR CODEBASE DELETING CRAPPY CODE
