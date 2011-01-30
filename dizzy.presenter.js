@@ -38,14 +38,6 @@ $(document).ready(
 
         });
 
-        $(document).mousewheel(function(e, delta) { // mousewheel support for scrolling in canvas
-            dizz.zoom(delta, e);
-        });
-
-        $(document).mousedown($.proxy(dizz.startpanning, dizz));
-        $(document).mousemove($.proxy(dizz.panning, dizz));
-        $(document).mouseup($.proxy(dizz.endpanning, dizz));
-
     }
 
 );
