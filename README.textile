@@ -7,6 +7,10 @@ h2. Usage
 
 h3. SVG
 
+Dizzy makes extensive use of SVG groups. First, “slides” are groups with the class “group” and one or more class “group_n”, where n is a positive integer signifying the position of the “slide” in the presentation. Second, all “slides” have to be in one SVG group with the id “canvas”.
+
+To impress the audience properly, SVG transformations should be applied to the “slide” groups.
+
 h3. Javascript
 
 Just create a new Dizzy object and pass a selector for a dom node thats used as container.
@@ -19,7 +23,6 @@ To navigate through the presentation just call the methods next(), previous() or
 h2. Browser support
 
 See "Browser support":http://github.com/Moerphy/dizzy.js/wiki/Browser-support in the wiki
-
 
 h2. To do
 
