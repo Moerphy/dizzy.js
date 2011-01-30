@@ -1,9 +1,9 @@
 /*
  * dizzy.js 
- * http://murphy.metafnord.org/dizzy
+ * http://dizzy.metafnord.org
  * 
- * Version: 0.3.1
- * Date: 10/23/2010
+ * Version: 0.4.0
+ * Date: 01/29/2010
  * 
  * licensed under the terms of the MIT License
  * http://www.opensource.org/licenses/mit-license.html
@@ -30,6 +30,8 @@ function Dizzy(container, options) {
 		// toggles overview mode (shows "group 0" aka the canvas"
 		this.overview = 0;
 		
+		this.clickNavigation  = false;
+		
 		for( opt in options ){
 			if( typeof opt != 'function' && typeof this[opt] != 'undefined' ){
 				this[opt] = options[opt];
@@ -40,7 +42,7 @@ function Dizzy(container, options) {
 /**
  * Loads a SVG file into the given container element.
  */
-Dizzy.prototype.load = function(url) {  
+Dizzy.prototype.load = function(url, callback) {  
 	// save outer scope for inner function later
 	var os = this;
 	$(this.container).svg({
@@ -49,10 +51,16 @@ Dizzy.prototype.load = function(url) {
 				os.svg = $(os.container).svg('get');
 				os.canvas = $('#canvas', os.svg.root() );
 				
+				// zebra is for the editor only, hide at first.
+				$('#zebra').hide();
+				
 				os.addEventHandlers();
 				
-				os.show(0);
-				})
+				//os.show(0); // makes me demo-presentation look kinda weird.. all of a sudden
+				if( typeof callback !== 'undefined' ){
+					callback();
+				}
+			})
 		});
 
 	
@@ -60,16 +68,27 @@ Dizzy.prototype.load = function(url) {
 	return this;
 }; 
 /**
- * Assigns an 
+ * Assigns the eventhandlers passed on the parameters passed on construction.
  */
 Dizzy.prototype.addEventHandlers = function(){
 	var os = this;
-	$('.group', this.svg.root() ).click(function(ev){
-		var group = ev.currentTarget;
-		var groupMatrix = os.getTransformationMatrix(group);
-		os.transformCanvas(groupMatrix.inverse());
-		return false;
-	});
+	if( this.clickNavigation === true ){
+		$('.group', this.svg.root() ).click(function(ev){
+			var group = ev.currentTarget;
+			var groupMatrix = os.getTransformationMatrix(group);
+			os.transformCanvas(groupMatrix.inverse());
+			return false;
+		});
+	}
+	var doc = $(document);
+	if( this.zoomable === true ){
+		doc.mousewheel(function(e, delta){ // mousewheel support for scrolling in canvas
+			dizz.zoom(delta, e);
+		});
+	}
+	if( this.pannable === true ){
+		doc.mousedown( function(e){ return os.startpanning(e); } );
+	}
 }
 
 /**
@@ -144,7 +163,7 @@ Dizzy.prototype.getTransformationMatrix = function(node){
 	}
 	var activeGroupTransformMatrix =  activeGroupTransformBase.consolidate().matrix;
 	// subgroups have to be "de-transformed" with the transformations of their parents
-	var parentGroups = $(node).parentsUntil('g#canvas');
+	var parentGroups = $(node).parentsUntil('g#canvas, svg');
 	
 	/* 
 	 * iterate over parents in the DOM until you hit the #canvas-group
@@ -152,7 +171,10 @@ Dizzy.prototype.getTransformationMatrix = function(node){
 	 */
 	parentGroups.each(	function(index){
 							var parent = $(this);
-							var parentBase = parent[0].transform.baseVal;
+							var parentBase = parent[0].transform;
+							if( typeof parentBase !== 'undefined' ){
+								parentBase = parentBase.baseVal;
+							}
 							if( parentBase.numberOfItems == 0 ){
 								var newTransform = this.svg.root().createSVGTransform();
 								parentBase.appendItem(newTransform);
@@ -175,8 +197,10 @@ Dizzy.prototype.transformCanvas = function(m, transformDuration){
 		transformDuration = this.transformTime;
 	}
 	$(this.canvas).animate({svgTransform:  'matrix('+m.a+' '+m.b+' '+m.c+' '+m.d+' '+m.e+' '+m.f+')'}, transformDuration);
-	
+	this.transformed();
 }
+
+
 
 /**
  * Gets the group that should be displayed and undoes the transformations that have been applied to it.
@@ -245,7 +269,7 @@ Dizzy.prototype.zoom = function(zoomInOut, e){
  */
 Dizzy.prototype.convertAbsoluteToRelative = function(x, y){
 	var canvasMatrix = $(this.canvas)[0].transform.baseVal.consolidate().matrix;
-	var svgPoint = this.svg.svg().createSVGPoint();
+	var svgPoint = this.svg.root().createSVGPoint();
 	svgPoint.x = x;
 	svgPoint.y = y;
 	svgPoint = svgPoint.matrixTransform(canvasMatrix.inverse());
@@ -258,8 +282,9 @@ var pan = {};
  * starts the panning, saves current mouseposition
  */
 Dizzy.prototype.startpanning = function(ev){
-	// only allow mousedragging if the pannable option is set to true
-	this.mouseClicked = this.pannable;
+	// prevents that ugly default-dragging of svg elements :>
+	ev.preventDefault();
+	
 	
 	var canvasMatrix = $(this.canvas)[0].transform.baseVal.consolidate().matrix;
 	
@@ -267,40 +292,51 @@ Dizzy.prototype.startpanning = function(ev){
 	
 	pan.x = svgPoint.x;
 	pan.y = svgPoint.y;
+	
+	var doc = $(document);
+	var endpan = function(e){ return dizz.endpanning(e); };
+	doc.
+		mousemove( function(e){ return dizz.panning(e); } ).
+		mouseup( endpan ).
+		// mouseout would fire if the mouse gets dragged over an descendant, mouseleave does not
+		mouseleave( endpan ); 
+	
+	return false;
 }
 
 /**
  * Pans the canvas by the offset from pan/ev.pageXY. Usually called as mousemoved()
  */
 Dizzy.prototype.panning = function(ev){
-	if( this.mouseClicked ){
-		var canvasMatrix = $(this.canvas)[0].transform.baseVal.consolidate().matrix;
-		
-		// convert delta values (because SVG works with relative dimensions + rotation + scale)
-		var svgPoint = this.convertAbsoluteToRelative(ev.pageX, ev.pageY);
-		var moveMe = {};
-		moveMe.x = svgPoint.x - pan.x;
-		moveMe.y = svgPoint.y -pan.y;
-
-		canvasMatrix = $(this.canvas)[0].transform.baseVal.consolidate().matrix;
-		canvasMatrix = canvasMatrix.translate( moveMe.x, moveMe.y);
-		var newMatrix = canvasMatrix;
-		$(this.canvas).attr('transform','matrix('+newMatrix.a+' '+newMatrix.b+' '+newMatrix.c+' '+newMatrix.d+' '+newMatrix.e+' '+newMatrix.f+')');
+	//ev.preventDefault();
+	var canvasMatrix = $(this.canvas)[0].transform.baseVal.consolidate().matrix; // [0] undefined
 	
-		svgPoint = this.convertAbsoluteToRelative(ev.pageX, ev.pageY);
-		pan.x = svgPoint.x;
-		pan.y = svgPoint.y;
-	
-	}
+	// convert delta values (because SVG works with relative dimensions + rotation + scale)
+	var svgPoint = this.convertAbsoluteToRelative(ev.pageX, ev.pageY);
+	var moveMe = {};
+	moveMe.x = svgPoint.x - pan.x;
+	moveMe.y = svgPoint.y -pan.y;
 
+	canvasMatrix = $(this.canvas)[0].transform.baseVal.consolidate().matrix;
+	canvasMatrix = canvasMatrix.translate( moveMe.x, moveMe.y);
+	var newMatrix = canvasMatrix;
+	$(this.canvas).attr('transform','matrix('+newMatrix.a+' '+newMatrix.b+' '+newMatrix.c+' '+newMatrix.d+' '+newMatrix.e+' '+newMatrix.f+')');
+
+	svgPoint = this.convertAbsoluteToRelative(ev.pageX, ev.pageY);
+	pan.x = svgPoint.x;
+	pan.y = svgPoint.y;
+	this.transformed();
+	return true;
 }
 /**
  * Ends the panning, usually called as mouseup()
  */
 Dizzy.prototype.endpanning = function(ev){
-	this.mouseClicked = false;
+	$(document).unbind('mousemove').unbind('mouseup').unbind('mouseleave');
+	return false;
 }
 
+Dizzy.prototype.transformed = function(){}
 
 
 
