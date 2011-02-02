@@ -24,6 +24,9 @@ Dizzy.prototype.editor = function(enable){
 		this.zoomable = true;
 		this.transformTime = 200;
 		
+		// rewrite viewbox
+		this.svg.configure({viewBox: '0 0 '+$(document).width()+' '+$(document).height() }, true);	
+		
 		// add toolbar
 		
 		// add zebra
@@ -35,7 +38,8 @@ Dizzy.prototype.editor = function(enable){
 		// not so nice to bind it to document.. but otherwise keypresses won't fire somehow o_O
 	
 		$(document).bind('keypress.dizzy.editor', function(event){ return os.keyPressed(event); });
-		$(document).bind('keydown.dizzy.editor', function(event){ return os.keyDown(event); });
+		$(document).bind('keydown.dizzy.editor',  function(event){ return os.keyDown(event); });
+		
 		// allow images to be dragged on the canvas. (:
 		// I love this feature, although not supported in Opera ):
 		if (window.File && window.FileReader && window.FileList) {
@@ -54,6 +58,7 @@ Dizzy.prototype.editor = function(enable){
 		// remove eventhandlers
 		$('g.group > *', this.svg.root() ).die('click');
 		$(document).unbind('keypress.dizzy.editor');
+		$(document).unbind('keydown.dizzy.editor');
 
 	}
 };
@@ -70,8 +75,9 @@ Dizzy.prototype.removeZebra = function(){
 
 Dizzy.prototype.zebraScaleStart = function(event){
 	var os = this;
+	var zebra = $('#zebra', this.svg.root());
 	var groupMatrix = this.getTransformationMatrix(this.selectedGroup[0]);
-	this.zebraScaleInfo = { x: event.pageX, y: event.pageY, matrix: groupMatrix };
+	this.zebraScaleInfo = { matrix: groupMatrix, xa: parseFloat(zebra.attr('x'))+100, ya: parseFloat(zebra.attr('y'))+100 };
 	
 	$( this.svg.root() ).bind('mousemove.dizzy.editor.scale', function(ev){ return os.zebraScale(ev); } );
 	var end = function(ev){ return os.zebraScaleEnd(ev); };
@@ -82,17 +88,19 @@ Dizzy.prototype.zebraScaleStart = function(event){
 };
 
 Dizzy.prototype.zebraScale = function(event){
-	var xOffset = Math.abs(event.pageX - this.zebraScaleInfo.x);
-	var yOffset = Math.abs(event.pageY - this.zebraScaleInfo.y);
 	
-	var distance = Math.sqrt( xOffset*xOffset + yOffset*yOffset );
+
+	var svgPoint = { x: event.pageX, y: event.pageY};
 	
-	if( this.first == false ){
-		this.zebraScaleInfo.matrix = this.zebraScaleInfo.matrix.translate(-250, -250);
-		this.first = true;
-	}
+	var cVector = { x: this.zebraScaleInfo.xa - svgPoint.x, y:this.zebraScaleInfo.ya - svgPoint.y };
+	var cVectorLength = Math.sqrt( cVector.x*cVector.x +  cVector.y*cVector.y ) / 60; // 60 is about the radius of the scale circle
+
+	var groupMatrix = this.getTransformationMatrix(this.selectedGroup[0]);
 	
-	var newMatrix = this.zebraScaleInfo.matrix.scale(distance/10);
+	
+	var newMatrix = this.zebraScaleInfo.matrix	// translation is used to scale group around center
+												.translate(-$(document).width()/2*(cVectorLength-1),-$(document).height()/2*(cVectorLength-1))
+												.scale(cVectorLength);
 	
 	this.selectedGroup.attr('transform', 'matrix('+newMatrix.a+' '+newMatrix.b+' '+newMatrix.c+' '+newMatrix.d+' '+newMatrix.e+' '+newMatrix.f+')');
 	
@@ -100,7 +108,7 @@ Dizzy.prototype.zebraScale = function(event){
 };
 
 Dizzy.prototype.zebraScaleEnd = function(event){
-	$( this.svg.root() ).unbind('mousemove.dizzy.editor');
+	$( this.svg.root() ).unbind('mousemove.dizzy.editor.scale');
 	$( this.svg.root() ).unbind( 'mouseup.dizzy.editor');
 	//this.selectedGroup.getClass
 	return false;
@@ -138,7 +146,10 @@ Dizzy.prototype.zebraTranslate = function(event){
 	this.zebraTranslateInfo.matrix = newMatrix;
 	
 	var zebra = $('#zebra', this.svg.root());
-
+	var coords = this.transformCoordinates(event.pageX,event.pageY, $(this.svg.root()), true);
+	zebra.attr('x', coords.x-100);
+	zebra.attr('y', coords.y-100);
+	
 	return false;
 };
 
@@ -151,38 +162,49 @@ Dizzy.prototype.zebraTranslateEnd = function(event){
 
 
 Dizzy.prototype.zebraRotateStart = function(event){
+	var zebra = $('svg#zebra', this.svg.root());
 	var os = this;
 	var groupMatrix = this.getTransformationMatrix(this.selectedGroup[0]);
-	this.zebraRotateInfo = { x: event.pageX, y: event.pageY, matrix: groupMatrix };
+	var x1 = parseFloat(zebra.attr('x'))+100;
+	var y1 = parseFloat(zebra.attr('y'))+100;
+	this.zebraRotateInfo = { 
+				xa: x1,
+				ya: y1,
+				lastVector: {
+					x: event.pageX - x1,
+					y: event.pageY - y1
+				},
+				matrix: groupMatrix
+	};
 	
-	$( this.svg.root() ).bind('mousemove.dizzy.editor', function(ev){ return os.zebraRotate(ev); } );
+	$( document ).bind('mousemove.dizzy.editor.rotate', function(ev){ return os.zebraRotate(ev); } );
+	
+	
 	this.currentZebraRotation = 0;
 	var end = function(ev){ return os.zebraRotateEnd(ev); };
-	$( document ).bind('mouseup.dizzy.editor', end );
+	$( document ).bind('mouseup.dizzy.editor.rotate', end );
 
 	return false;
 };
 
 Dizzy.prototype.zebraRotate = function(event){
 	var zebra = $('svg#zebra', this.svg.root());
-	var canvasMatrix = this.zebraRotateInfo.matrix;
-	// arc of rotate-circle is r*PI*(alpha/180), which makes a total arc of 2*PI*r
-	// calculate distance of mousemove
-	var xDelta = this.zebraRotateInfo.x - event.pageX;
-	var yDelta = event.pageY - this.zebraRotateInfo.y;
 	
-	var distance = Math.sqrt(xDelta*xDelta + yDelta*yDelta);
-	var alpha = (distance/628.318)*360;
-	
-	this.currentZebraRotation += alpha;
+	var newVector = {
+		x: event.pageX - this.zebraRotateInfo.xa,
+		y: event.pageY - this.zebraRotateInfo.ya
+	};
+	var lastVector = this.zebraRotateInfo.lastVector;
+
+	var angle =  180/Math.PI * (Math.atan2(newVector.y,newVector.x) - Math.atan2(lastVector.y,lastVector.x));
+
+	var xTranslate = $(document).width()/2;
+	var yTranslate = $(document).height()/2;
 	var newMatrix = this.zebraRotateInfo.matrix.
-								translate(canvasMatrix.e, canvasMatrix.f).
-								rotate(this.currentZebraRotation).
-								translate(-canvasMatrix.e, -canvasMatrix.f);
-	
-	
-	this.zebraRotateInfo.x = event.pageX;
-	this.zebraRotateInfo.y = event.pageY;
+								translate(xTranslate, yTranslate).
+								rotate(angle).
+								translate(-xTranslate, -yTranslate);
+
 	
 	this.selectedGroup.animate({svgTransform: 'matrix('+newMatrix.a+' '+newMatrix.b+' '+newMatrix.c+' '+newMatrix.d+' '+newMatrix.e+' '+newMatrix.f+')'}, 0);
 	$( '#zebra_rotate', this.svg.root() ).animate({svgTransform: 'rotate('+this.currentZebraRotation+', 50, 50)'}, 0);
@@ -190,8 +212,8 @@ Dizzy.prototype.zebraRotate = function(event){
 };
 
 Dizzy.prototype.zebraRotateEnd = function(event){
-	$( this.svg.root() ).unbind('mousemove.dizzy.editor');
-	$( document ).unbind('mouseup.dizzy.editor');
+	$( document ).unbind('mousemove.dizzy.editor.rotate');
+	$( document ).unbind('mouseup.dizzy.editor.rotate');
 	return false;
 };
 
@@ -220,8 +242,8 @@ Dizzy.prototype.showZebra = function(ev){
 	group.attr('opacity', '0.5');
 
 	// display zebra somewhere on that element
-	zebra.attr('x',500);
-	zebra.attr('y',500);
+	zebra.attr('x',ev.pageX-100);
+	zebra.attr('y',ev.pageY-100);
 	zebra.show();
 	
 	$('svg, #canvas').bind('mousedown.dizzy.editor.hidezebra', $.proxy(os.hideZebra, os) );
@@ -233,12 +255,12 @@ Dizzy.prototype.showZebra = function(ev){
 Dizzy.prototype.hideZebra = function(ev){
 	$( 'svg#zebra', this.svg.root() ).hide();
 	
-	if( typeof this.selectedGroup !== 'undefined' ){
+	if( typeof this.selectedGroup != 'undefined' ){
 		this.selectedGroup.removeAttr('opacity');
-		this.selectedGroup = undefined;
 	}
 	var os = this;
-	$('svg, #canvas').unbind('mousedown.dizzy.editor.hidezebra');
+	//$('svg, #canvas').unbind('mousedown.dizzy.editor.hidezebra');
+	this.selectedGroup = undefined;
 	this.selectedTarget = undefined;
 	return true;
 };
@@ -256,41 +278,53 @@ Dizzy.prototype.keyPressed = function(ev){
 		var matrix = this.getTransformationMatrix(this.canvas[0]).inverse();
 		group.attr('transform', 'matrix('+matrix.a+' '+matrix.b+' '+matrix.c+' '+matrix.d+' '+matrix.e+' '+matrix.f+')');
 		var text = $(this.svg.other(group, 'text'));
-		text.attr('font-size', '50').attr('x','500').attr('y', '500');
+		text.attr('text-anchor', 'middle');
+		text.attr('font-size', '80').attr('x', $(document).width()/2).attr('y', $(document).height()/2);
 		
 		group.append(text);
-		//$('#canvas', this.svg.root()).append(groupNode);
+		/* TODO
+		<text y="10">
+			<tspan x="10">tspan line 1</tspan>
+			<tspan x="10" dy="15">tspan line 2</tspan>
+			<tspan x="10" dy="15">tspan line 3</tspan>
+        </text>
+        */
 		this.selectedGroup = group;
 		this.selectedTarget = text;
 		node = text;
+	
 	}
 	var oldText = node.text();
-	if( ev.which === 8 ){ // backspace
-		if( oldText.length === 0 ){ // remove group
-			group.remove();
-		}else{ // delete last char
-			node.text(oldText.substr(0, oldText.length-1));
-		}
-	}else{
+	if( ev.which !== 8 ){ // backspace
 		node.text(oldText+String.fromCharCode(ev.which));
 	}
 
 	
-	return false;
+	return true;
 };
 /**
  * Keydown handles everything that is not text (backspace, delete, enter, etc..)
  */
 Dizzy.prototype.keyDown = function(ev){
-	ev.preventDefault();
+	//ev.preventDefault();
 	var node = this.selectedTarget;
-	
-	if(ev.which === 13 ){ // enter (multiline text not supported yet ):
-		this.hideZebra();
-	}else if(ev.which === 46 || ev.which === 0 && ev.keyCode === 46 ){ // delete key -> remove group
-		this.removeNode(this.selectedTarget);
+	if( typeof node !== 'undefined' ){
+		if(ev.which === 13 ){ // enter (multiline text not supported yet ):
+			this.hideZebra(); // does make some problems
+		}else if(ev.which === 46 || ev.which === 0 && ev.keyCode === 46 ){ // delete key -> remove group
+			this.removeNode(this.selectedTarget);
+		}else if( ev.which === 8 ){ // backspace
+			var oldText = node.text();
+			
+			if( oldText.length === 0 ){ // remove group
+				group.remove();
+			}else{ // delete last char
+				node.text(oldText.substr(0, oldText.length-1));
+			}
+		}
+		
 	}
-	return false;
+	return true;
 };
 
 Dizzy.prototype.removeNode = function(target){
@@ -336,8 +370,12 @@ Dizzy.prototype.addImage = function(data){
 
 
 
-
-
+Dizzy.prototype.vectorDotProduct = function(vectorA, vectorB){
+	return vectorA.x*vectorB.x + vectorA.y*vectorB.y;
+}; 
+Dizzy.prototype.vectorLength = function(vector){
+	return Math.sqrt( vector.x*vector.x + vector.y*vector.y );
+};
 
 
 
