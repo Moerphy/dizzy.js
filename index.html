@@ -6,11 +6,13 @@
 
         <link type="text/css" rel="stylesheet" href="./css/editor.css"/>
         <link type="text/css" rel="stylesheet" href="./css/smoothness/jquery-ui-1.8.9.custom.css"/>
-
+		<!--  contains jquery, jquery mousewheel and jquery svg -->
 		<script type="text/javascript" src="./js/jquery/jquery.full.min.js"></script>
 		<script type="text/javascript" src="./js/jquery/jquery-ui.min.js"></script>
+		
+	    <script type="text/javascript" src="./js/dizzy.js"></script>
+	    <script type="text/javascript" src="./js/dizzy.editor.js"></script>
 
-	    <script type="text/javascript" src="./js/dizzy.full.min.js"></script>
 		<script type="text/javascript" src="./js/editor.ui.js"></script>
 
     </head>
@@ -88,6 +90,19 @@
 
 	</div>
 		
+	
+	<div id="openfileDialog" title="Open existing Dizzy presentation" class="invisible">
+		<!-- <p class="validateTips">Caution: files are currently not checked for validity!</p> -->
+	
+		<form>
+			<fieldset>
+				<label for="fileThingy">File:</label>
+				<input type="file" name="fileThingy" id="fileInput" 
+					class="text ui-widget-content ui-corner-all" />
+			</fieldset>
+		</form>
+	</div>
+
 	
 	
 
