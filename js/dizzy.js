@@ -3,7 +3,7 @@
  * http://dizzy.metafnord.org
  * 
  * Version: 0.4.0
- * Date: 02/07/2010
+ * Date: 02/07/2011
  * 
  * licensed under the terms of the MIT License
  * http://www.opensource.org/licenses/mit-license.html
@@ -30,7 +30,7 @@ var Dizzy =	(function(window, document, undefined){
 		// group that is now shown
 		var groupNum = -1;
 		
-		this.options = {
+		that.options = {
 			// time the animated transformation takes (in ms)
 			transformTime : 1000,
 			// determines how much zooming is made on zoom() call. 1 = none, 2 = double/halve zoomfactor, etc..
@@ -49,7 +49,7 @@ var Dizzy =	(function(window, document, undefined){
 			if( typeof presentationOptions[opt] !== 'function' && typeof that.options[opt] !== 'undefined' ){
 				that.options[opt] = presentationOptions[opt];
 			}
-		}; // no semicolon confuses my editor o_O
+		}
 		
 		
 		/*
@@ -97,7 +97,10 @@ var Dizzy =	(function(window, document, undefined){
 		 */
 		Dizz.prototype.load = function(url, callback){  
 			container = $(container);
-			container.svg({
+			container
+				.empty()
+				.removeClass('hasSVG')
+				.svg({
 					loadURL: url, 
 					onLoad: (function(svgw){
 						that.svg = container.svg('get');
@@ -118,6 +121,8 @@ var Dizzy =	(function(window, document, undefined){
 			});
 			return this;
 		}; 
+		
+		
 		
 		/**
 		 * Checks if there is a group defined with the given number
@@ -411,14 +416,7 @@ var Dizzy =	(function(window, document, undefined){
 			return false;
 		};
 		
-		/**
-		 * Used to get the XML-Representation of the SVG-DOM.
-		 */
-		Dizz.prototype.serialize = function(){
-			// clean up, remove all empty groups
-			$('.group:empty', that.svg.root()).remove();
-			return that.svg.toSVG();	
-		};
+		
 		
 		
 		
