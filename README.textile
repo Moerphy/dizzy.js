@@ -3,9 +3,16 @@ h1. dizzy.js
 dizzy.js enables you to create non-linear presentations similiar to 
 "Prezi":http://prezi.com, without using Flash or some other proprietary technology.
 
+For a quick start, try using presenter.html, appending the path of one of the examples as the URL hash.
+(Example: <file:///home/erlehmann/src/dizzy.js/presenter.html#examples/upside-down-zoom.svg>)
+
 h2. Usage
 
 h3. SVG
+
+Dizzy makes extensive use of SVG groups. First, “slides” are groups with the class “group” and one or more class “group_n”, where n is a positive integer signifying the position of the “slide” in the presentation. Second, all “slides” have to be in one SVG group with the id “canvas”.
+
+To impress the audience properly, SVG transformations should be applied to the “slide” groups.
 
 h3. Javascript
 
@@ -27,7 +34,6 @@ To navigate through the presentation just call the methods next(), previous() or
 h2. Browser support
 
 See "Browser support":http://github.com/Moerphy/dizzy.js/wiki/Browser-support in the wiki
-
 
 h2. To do
 
