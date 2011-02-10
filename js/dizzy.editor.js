@@ -50,28 +50,25 @@ Dizzy =	(function(D, window, document, undefined){
 				// rewrite viewbox. Not the nicest thing to do, but makes so many things so much easier.
 				that.svg.configure({viewBox: '0 0 '+$(document).width()+' '+$(document).height() }, true);	
 				
-				// add toolbar
-				loadToolbar();
-				showToolbar();
-				
+				that.editorModes = [ DizzyEditor.prototype.editorDefaultMode,  DizzyEditor.prototype.editorPathMode ];
+	
 				// add zebra
 				loadZebra();
 				
 				// add eventhandlers
-				editorDefaultMode(true);
+				that.editorDefaultMode(true);
 			}else{
 				that.options.pannable = dizzyOptionsBackup.pannable;
 				that.options.zoomable = dizzyOptionsBackup.zoomable;
 				that.options.transformTime = dizzyOptionsBackup.transformTime;
 				
-				// hide toolbar
-				hideToolbar();
+
 				
 				// hide zebra
 				hideZebra();
 				
-				editorDefaultMode(false);
-				editorPathMode(false);
+				that.editorDefaultMode(false);
+				that.editorPathMode(false);
 			}
 		};
 		
@@ -83,13 +80,12 @@ Dizzy =	(function(D, window, document, undefined){
 		 */
 		/** 
 		 * Sets the default mode (free navigation on canvas, clicking groups opens zebra).
-		 * Also sets the button in the toolbar to disabled.
 		 * @param {boolean} enable or disable this mode.
 		 */
-		var editorDefaultMode = function(enable){
+		DizzyEditor.prototype.editorDefaultMode = function(enable){
 			if( enable === true ){
 				// disable all other modes
-				editorPathMode(false);
+				$(that.editorModes).each( function(index){ this(false); } );
 				
 				$('g.group > *', that.svg.root() ).live('click.dizzy.editor.default', function(event){ return showZebra(event); } );
 				// not so nice to bind it to document.. but otherwise keypresses won't fire somehow o_O
@@ -117,10 +113,10 @@ Dizzy =	(function(D, window, document, undefined){
 		 * Also sets the button in the toolbar to disabled.
 		 * @param {boolean} enable enable or disable this mode
 		 */
-		var editorPathMode = function(enable){
+		DizzyEditor.prototype.editorPathMode = function(enable){
 			if( enable === true ){
 				// disable all other modes
-				editorDefaultMode(false);
+				$(that.editorModes).each( function(index){ this(false); } );
 				if( typeof this.pathNumber === 'undefined' ){
 					this.pathNumber = 0;
 				}
@@ -142,6 +138,19 @@ Dizzy =	(function(D, window, document, undefined){
 				$('g.group', that.svg.root() ).children().unbind('click.dizzy.editor.path');
 			}
 		};
+		
+		/**
+		 * Used to get the XML-Representation of the SVG-DOM.
+		 */
+		DizzyEditor.prototype.serialize = function(){
+		 	// Fixes Chrome. I really have no clue why chrome leaves that out otherwise...
+			$(that.svg.root()).attr('xmlns','http://www.w3.org/2000/svg');
+			hideZebra();
+			// clean up, remove all empty groups
+			$('.group:empty', that.svg.root()).remove();
+			
+			return that.svg.toSVG();	
+		}; 
 		
 		/**
 		 * Adds a group number to a node. Used for making navigation paths through the groups.
@@ -279,41 +288,13 @@ Dizzy =	(function(D, window, document, undefined){
 			// */
 			return true;
 		};
-		
-		/**
-		 * Loads toolbar onto the SVG if it is not present.
-		 * TODO: load dynamicly if not present.
-		 */
-		var loadToolbar = function(){
-			$( 'svg#toolbar', that.svg.root() ).hide();
-			$( 'svg#toolbar #pathButton', that.svg.root() )
-				.bind('click.dizzy.editor.tool.path', function(evt){ $(this).siblings().fadeTo(0, 0.3); $(this).fadeTo(0, 1); editorPathMode(true); } );
-			$( 'svg#toolbar #defaultModeButton', that.svg.root() )
-				.bind('click.dizzy.editor.tool.default', function(evt){ $(this).siblings().fadeTo(0, 0.3); $(this).fadeTo(0, 1); editorDefaultMode(true); } );
-			// initially fade everything but default out
-			$( 'svg#toolbar > *', that.svg.root() ).not('#defaultModeButton').fadeTo(0, 0.3);
-		};
-		
-		/**
-		 * jQuery wrappers for the toolbar.
-		 */
-		var hideToolbar = function(){
-			$( 'svg#toolbar', that.svg.root() ).hide();
-		};
-		var showToolbar = function(){
-			$( 'svg#toolbar', that.svg.root() ).show();
-		};
-		var removeToolbar = function(){
-			$( 'svg#toolbar', that.svg.root() ).remove();
-		};
-		
+
 		
 		/**
 		 * Loads the zebra-element in the SVG if not already present.
 		 * TODO: load dynamicly if not present.
 		 */
 		var loadZebra = function(){
-			$( 'svg#zebra', that.svg.root() ).css('opacity', '0.9');
 			$( 'svg#zebra', that.svg.root() ).hide();
 		};
 		/**
@@ -482,6 +463,7 @@ Dizzy =	(function(D, window, document, undefined){
 		var showZebra = function(ev){
 			var svgRoot = that.svg.root();
 			var zebra = $( 'svg#zebra', svgRoot );
+			zebra.css('opacity', '0.9');
 			$( 'svg#zebra #zebra_rotate', svgRoot ).mousedown( function(ev){ return zebraRotateStart(ev); } );
 			$( 'svg#zebra #zebra_scale', svgRoot ).mousedown( function(ev){ return zebraScaleStart(ev); } );
 			$( 'svg#zebra #zebra_translate', svgRoot ).mousedown( function(ev){ return zebraTranslateStart(ev); } );
@@ -509,6 +491,7 @@ Dizzy =	(function(D, window, document, undefined){
 		};
 		
 		var hideZebra = function(ev){
+			$( 'svg#zebra', that.svg.root() ).css('opacity', '');
 			$( 'svg#zebra', that.svg.root() ).hide();
 			
 			if( typeof selectedGroup !== 'undefined' ){
