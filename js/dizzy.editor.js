@@ -24,7 +24,7 @@ Dizzy =	(function(D, window, document, undefined){
 	 * @type 
 	 */
 	function DizzyEditor(){
-		var dizzyOptionsBackup = {};
+		var dizzyOptionsBackup = undefined;
 		var selectedGroup;
 		var selectedTarget;
 		var that = this;
@@ -36,12 +36,13 @@ Dizzy =	(function(D, window, document, undefined){
 		DizzyEditor.prototype.editor = function(enable){
 			if( enable === true ){
 				// backup old values
-				dizzyOptionsBackup = { 
-					pannable : that.options.pannable, 
-					zoomable : that.options.zoomable, 
-					transformTime : that.options.transformTime 
-				};
-				
+				if(dizzyOptionsBackup === undefined){
+					dizzyOptionsBackup = { 
+						pannable : that.options.pannable, 
+						zoomable : that.options.zoomable, 
+						transformTime : that.options.transformTime 
+					};
+				}
 				// for editing, use other values
 				that.options.pannable = true;
 				that.options.zoomable = true;
