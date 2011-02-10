@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+        <title>Dizzy Editor</title>
+
+        <link type="text/css" rel="stylesheet" href="./css/editor.css"/>
+        <link type="text/css" rel="stylesheet" href="./css/smoothness/jquery-ui-1.8.9.custom.css"/>
+
+		<script type="text/javascript" src="./js/jquery/jquery.full.min.js"></script>
+		<script type="text/javascript" src="./js/jquery/jquery-ui.min.js"></script>
+
+	    <script type="text/javascript" src="./js/dizzy.full.min.js"></script>
+		<script type="text/javascript" src="./js/editor.ui.js"></script>
+
+    </head>
+    <body style="height: 100%">
+	<div id="dizzy"></div>
+	
+	<div id="menubar" class="ui-state-default">
+			<div class="menuItem" id="openButton"><img src="./images/menu_open.png" /> Open</div>
+			<div class="menuItem" id="saveButton"><img src="./images/menu_save.png" /> Save</div>
+			<div class="menuItem" id="presentToggleButton">
+				<img src="./images/menu_present.png" /> <span id="presentToggleText">Present</span>
+			</div>
+			<div class="menuItem" id="helpButton"><img src="./images/menu_help.png" /> Help?</div>
+			<div class="menuItem" id="aboutButton"><img src="./images/menu_about.png" /> About</div>
+	</div>
+
+
+	<div id="toolbar">
+			<div class="toolItem" id="defaultTool"><img src="./images/tool_default.png" /></div>
+			<div class="toolItem" id="pathTool"><img src="./images/tool_path.png" /></div>
+	</div>
+
+	<div id="leftrightButtons">
+		<div id="left">&lt; </div> <div id="right"> &gt;</div>
+	</div>
+	
+	
+
+
+	<!--  Dialogs -->
+	<div id="helpDialog" class="invisible" title="Help">
+		The current version of the Dizzy editor supports only the basic content: images and text.<br /><br />
+		To add <b>text</b>, just start typing. The text will be put on the spot you are currently viewing.<br />
+		To add <b>images</b>, drag and drop them from your desktop. 
+		This works in the latest Chrome and Firefox, not in Opera. 
+		It may work in some other browsers, but I didn&apos;t have the time to test that yet.<br />
+		<img src="./images/editor_image.png" /><br />
+		<br />
+		After you put your content on the canvas, switch to the path-mode by clicking on the second button on the toolbar on your left.<br />
+		In <b>path-mode</b>, you can set the order in which you want to show the things on the canvas.
+		You can also drag and drop the pathnumbers to reorder your path.<br />
+		<img src="./images/editor_path.png" /><br />
+		<br />
+		Once you have all your content put on the canvas and set the order you should switch to the
+		 <b>presentation-mode</b> by clicking "Present" in the menubar on the top. 
+		This will hide the toolbar and show buttons for moving back and forth in your path.<br />
+		<br /><br />
+		Have fun playing with this.
+		
+	</div>
+	
+	
+
+	<div id="aboutDialog" class="invisible" title="About Dizzy">
+		Dizzy is a web based presentation application, heavily inspired by <a href="http://prezi.com">Prezi</a>,
+		that uses a single canvas instead of multiple slides for a presentation.<br />
+		<br />
+		Unlike Prezi, presentations with Dizzy are made entirely without Flash, using SVG and Javascript only. 
+		Also everything is open source under the MIT license.<br />
+		<br />
+		Sourcecode for the core and the editor are available on <a href="https://github.com/Moerphy/dizzy.js">Github</a>.<br />
+		<br />
+
+		<b>Please keep in mind: this project is still in it&apos;s early beta, 
+		so there are many open bugs and quirks and a lot of features yet to be implemented.</b><br />
+		Would be awesome if you report anything that does not work or behaves strange 
+		in the <a href="https://github.com/Moerphy/dizzy.js/issues">issue tracker</a><br />
+		<br />
+		
+		The good-looking icons on this page are from the silk icon set by famfamfam.com.<br />
+		<br />
+		Author: <a href="http://murphy.metafnord.org">Murphy</a> <a href="http://www.twitter.com/MrMoerphy"><img src="http://twitter-badges.s3.amazonaws.com/t_small-b.png" alt="Follow me on Twitter" style="border: 0; vertical-align: text-bottom;"/></a>
+		
+	
+
+	</div>
+		
+	
+	
+
+
+	
+    </body>
+</html>
