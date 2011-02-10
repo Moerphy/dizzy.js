@@ -3,9 +3,9 @@
          "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg xmlns="http://www.w3.org/2000/svg"
      xmlns:xlink="http://www.w3.org/1999/xlink"
-     viewBox="0 0 1000 1000">
-
-     <g  id="canvas" stroke="black" stroke-width="2px" fill="darkgrey">
+     viewBox="0 0 1000 1000" id="root">
+	<rect stroke="black" fill="white" x="0" y="0" width="1000" height="1000" />
+     <g  id="canvas" stroke="darkgrey" stroke-width="2px" fill="black">
 		
 		<!-- 	if the group wouldn't be scaled down, 
 				text would be centered without translate() -->
@@ -16,7 +16,7 @@
 				text-anchor="middle" 
 				font-size="150"
 				x="500"
-				y="500">
+				y="500" editable="simple">
 				paniq - Elektronische Musik
 			</text>
 			
@@ -118,7 +118,37 @@
 					... that's enough demo for now (aka I'm too lazy to code more)
 			</text>
 		</g>
-		
 	</g>
+	
+	
+	<!-- Canvas Zebra -->
+	<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     viewBox="0 0 100 100" width="200px" height="200px" id="zebra">
+	<defs>
+		<pattern
+	       id="stripes"
+	       height="1"
+	       width="4"
+	       patternUnits="userSpaceOnUse">
+		<rect
+	         height="2"
+	         width="2"
+	         y="-0.5"
+	         x="0"
+	         style="fill:grey;stroke:none" />
+		</pattern>
+	</defs>
+	 <g id="zebra_inner" translate="0">
+		<path id="zebra_rotate" d="M8,50 a42,42 0 1,0 0,-1 Z"
+    		style="fill:none; stroke:grey; stroke-width:12; stroke-dasharray:2%, 2%;" />
+		<path id="zebra_scale" d="M21,50 a29,29 0 1,0 0,-1 Z"
+    		style="fill:none; stroke:lightgrey; stroke-width:10;" />
+    	<path id="zebra_translate" d="M28,50 a22,22 0 1,0 0,-1 Z"
+    		style="fill: url(#stripes);" />
+	 </g>
+	</svg>
+	
+	
 	
 </svg>
