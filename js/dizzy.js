@@ -28,7 +28,7 @@ var Dizzy =	(function(window, document, undefined){
 		// group that is used for transformations, child of svg
 		that.canvas = undefined;
 		// group that is now shown
-		var groupNum = -1;
+		var groupNum = 0;
 		
 		that.options = {
 			// time the animated transformation takes (in ms)
