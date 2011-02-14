@@ -3,8 +3,8 @@ h1. dizzy.js
 dizzy.js enables you to create non-linear presentations similiar to 
 "Prezi":http://prezi.com, without using Flash or some other proprietary technology.
 
-For a quick start, try using presenter.html, appending the path of one of the examples as the URL hash.
-(Example: <file:///home/erlehmann/src/dizzy.js/presenter.html#examples/upside-down-zoom.svg>)
+For a quick start, try using presenter.html, appending the path of one of the examples as a GET variable called “file”.
+(Example: <file:///home/erlehmann/src/dizzy.js/presenter.html?file=examples/upside-down-zoom.svg>
 
 h2. Usage
 
