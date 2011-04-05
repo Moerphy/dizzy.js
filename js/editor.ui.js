@@ -1,18 +1,11 @@
-/*
- * editor.ui of dizzy.js 
- * http://dizzy.metafnord.org
- * 
- * Date: 04/05/2011
- * 
- * licensed under the terms of the MIT License
- * http://www.opensource.org/licenses/mit-license.html
- */
-
 $(function(){
-	$('#dizzy').height($(document).height());
-	$('#dizzy').width($(document).width());
+	var containerSelector = '#dizzy';
+	$(containerSelector)
+		.height($(document).height())
+		.width($(document).width())
+		.focus();
 	
-	var dizz = new Dizzy('#dizzy', {zoomable: true, pannable: true, transformTime: 1000, zoomFactor: 2} );
+	var dizz = new Dizzy(containerSelector , {zoomable: true, pannable: true, transformTime: 1000, zoomFactor: 2} );
 		
 	loadPresentation('./svg/blank.svg');
 	
@@ -22,66 +15,22 @@ $(function(){
 			function(){ 
 				dizz.show(0);
 				dizz.editor(true);
+            // load default css in edit-box
+            $('#menu-style-css-input').val( $('#dizzy-internal-style').text() );
 			} );
 	}
 	var toolbar = $('#toolbar');
-	/*
-	 * menubar effects
-	 */ 
-	var inBar = false;
-	var bar = $('#menubar');
 
-	bar.bind( {
-			mouseenter: (function(ev){ inBar = true; setTimeout(showHideMenuBar, 500 ); }),
-			mouseleave: (function(ev){ inBar = false;setTimeout(showHideMenuBar, 500 ); })
-			}
-	);
-	function showHideMenuBar(){
-		var menuHeight = 40;
-		if( inBar === false ){
-			menuHeight = 10;
-	 	}
-		bar.animate({height:menuHeight+'px' }, 500);
-	}
 	
 
 	/*
 	 * Menubar event handlers
 	 */
 	/*
-	 * Save
-	 */
-	$('#saveButton').bind('click', 
-		function(){ 
-			var svgProlog = '<?xml version="1.0" encoding="UTF-8"?>';
-		
-			var svgText = dizz.serialize();
-			var svgBase64 = 'data:image/svg+xml;charset=utf-8;base64,'+$.base64Encode (svgText);
-			window.open(svgBase64);
-		});
-	/*
-	 * Present/Edit
-	 */
-	$('#presentToggleButton').toggle(
-		function(){ 
-			dizz.editor(false); 
-			toolbar.hide();
-			$('#presentToggleText').text('Edit'); 
-			$('#leftrightButtons').fadeToggle('slow'); 
-		},
-		function(){ 
-			dizz.editor(true); 
-			toolbar.show();
-			$('#presentToggleText').text('Present'); 
-			$('#leftrightButtons').fadeToggle('slow'); 
-		}
-	);
-	
-	/*
 	 * Help
 	 */
 	var dialogWidth = $(document).width()/2;
-	var maxH = $(document).height()*0.5;
+	var maxH = $(document).height()/2;
 	$('#helpDialog').dialog({autoOpen: false, modal:true, width: dialogWidth, height: maxH, maxHeight: maxH});
 	$('#helpButton').bind('click', 
 		function(){
@@ -100,101 +49,116 @@ $(function(){
 		}
 	);
 	
-
-	/*
-	 * Open (does not work currently)
-	 */
-	var openSVGFile;
-	$('#openButton').click( function(){
-		if ( window.File && window.FileReader ) {
-			$('#openfileDialog').dialog('open');
-		}else{
-			alert("Sorry, your browser does not support the File API. ): \n\r Try using Firefox 3.6 or Google Chrome 8 or higher.")
-		}
-	});	
-	
-	
-	$('#openfileDialog').dialog({
-		autoOpen: false,
-		modal: true,
-		width: dialogWidth,
-		buttons: {
-			Open: (function() {
-				if( openSVGFile !== undefined ){
-					this.value = '';
-				    var reader = new FileReader();
-				    reader.onload = function(e) { 
-						dizz.load( e.target.result, function(){
-							dizz.editor(true);
-						});
-				    };
-				    reader.readAsText(openSVGFile);
-				}
-				$( this ).dialog( "close" );
-			}),
-			Cancel: (function() {
-				$( this ).dialog( "close" );
-			})
-		}
-	});
-	
-	
-	$('#fileInput').bind('change', 
-		function(evt){
-			var file = evt.target.files; // FileList object
-			if ( file.length >= 1 && file[0].type==='image/svg+xml') {
-				openSVGFile = file[0];
-		    }else{
-		    	openSVGFile = undefined;	
-		    }
-	});
-
-
-	/*
-	 * Toolbar
-	 */
-	
-	var inToolbar = false;
-	toolbar.bind({
-		mouseenter: function(e){
-			inToolbar = true;
-			setTimeout( showHideToolbar, 350 );
-		},
-		mouseleave: function(e){
-			inToolbar = false;
-			setTimeout( showHideToolbar, 350 );
-		}
-	});
-
-	function showHideToolbar(){
-		var toolWidth = 40;
-		if( inToolbar === false ){
-			toolWidth = 10;
-	 	}
-		toolbar.animate({width:toolWidth+'px' }, 500);
-	}
-	
-	/*
-	 * Editor defaultmode
-	 */
-	$('#defaultTool').click( function(e){ 
+      
+   /*
+    * Toolbar
+    */
+   function selectButton(node){
+      $(node).siblings().removeClass('pressed');
+		$(node).addClass('pressed');
+      dizz.hideZebra();
+   }
+   $('#tool-default').click( function(e){ 
 		dizz.editorDefaultMode(true); 
-		$(this).siblings().css('opacity', '1');
-		$(this).css('opacity', '0.7');
+		selectButton(this);
 	} );
-	/*
-	 * Editor pathmode
-	 */
-	$('#pathTool').click( function(e){ 
+   $('#tool-path').click( function(e){ 
 		dizz.editorPathMode(true); 
-		$(this).siblings().css('opacity', '1');
-		$(this).css('opacity', '0.7');
+		selectButton(this);
 	} );
+   
+   /*
+    * previous- and next-buttons in presentation mode
+    */
+   $('#tool-previous').click( function(e){ 
+		dizz.previous(); 
+	} );  
+   $('#tool-next').click( function(e){ 
+		dizz.next(); 
+	} );     
+      
+   $('#present-toggle-button').toggle(
+		function(){ 
+         dizz.editor(false); 
+         $('.toolbutton').not('.fullwidth').toggleClass('hidden');
+			$('#present-toggle-button').children('span').text('End'); 
+		},
+		function(){ 
+			dizz.editor(true); 
+         selectButton($('#tool-default'));
+			$('.toolbutton').not('.fullwidth').toggleClass('hidden');
+			$('#present-toggle-button').children('span').text('Present');
+		}
+	); 
+      
+      
+      
+   /*
+    * Menu
+    */
+   var menuRightDefaultText;
+   function toggleMenu(){
+      $('#menu').toggleClass('hidden');
+      $('#tools-main').toggleClass('expanded');
+      dizz.editor(!dizz.isEditing());
+      menuRightDefaultText = menuRightDefaultText||$('#menu-right').text();
+      $('#menu-right').html(menuRightDefaultText);
+   }
+   $('#menu-button').bind('click', function() {
+      toggleMenu();
+   });
+       
 	/*
-	 * Present-mode buttons
-	 */
-	// next
-	$('#left').click( function(){ dizz.previous(); } );
-	// previous
-	$('#right').click( function(){ dizz.next(); } );
+	 * Menu-items
+    */
+   
+   $('#menu-left li li').bind('mouseover', function(e){
+      var that = $(this);
+      var text = that.attr('data-description')||that.attr('title');
+      $('#menu-right').text(text);
+   });
+   
+   $('#menu-left li li:not(.inactive)').bind('click', function(e){
+      var hidden = $(this).children('div');
+      hidden.toggleClass('hidden');
+      hidden.bind('click', function(e) { e.stopPropagation(); } ); // prevent event bubbling.
+   });
+   
+   // open
+   $('#menu-open-input').bind('change', function(evt){
+      var file = evt.target.files; // FileList object
+      if ( file.length >= 1 && file[0].type==='image/svg+xml') {
+         var reader = new FileReader();
+         var openSVGFile = file[0];
+         reader.onload = function(e){ 
+            dizz.load( e.target.result, function(){
+               dizz.editor(true);
+               toggleMenu();
+            });
+         };
+         reader.readAsText(openSVGFile);
+      }
+   });
+   
+   $('#menu-save').bind('click', function(evt){
+      dizz.editor(false);
+      var svgProlog = '<?xml version="1.0" encoding="UTF-8"?>';
+
+      var svgText = dizz.serialize();
+      var svgBase64 = 'data:image/svg+xml;charset=utf-8;base64,'+$.base64Encode (svgText);
+      window.open(svgBase64);
+   });
+   
+   // style -> css
+   var cssInput = $('#menu-style-css-input');
+   cssInput.bind('blur', function(evt){
+      $('#dizzy-internal-style').empty();
+      $('#dizzy-internal-style').append( cssInput.val() );
+   });
+   
+   
+   
+   
+
+	
 });

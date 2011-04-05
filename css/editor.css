@@ -1,0 +1,424 @@
+html, body { 
+	font: 14px Verdana;
+}
+
+li {
+	list-style-type: none;
+	padding-left: 0;
+}
+
+a, a:active, a:link{
+	color: #333333;
+	font-weight: bold;
+}
+
+/*
+ * only used in the menu (o:
+ */
+#menu-left li li{
+
+	width: 98%;
+	background: #DDDDDD;
+	
+	/* Firefox 3.6+ */
+    background: -moz-linear-gradient(100% 100% 90deg,  #CFCFCF, #DDDDDD);
+    /* Safari 4+, Chrome 1+ */
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#DDDDDD), to(#CFCFCF));
+    /* Safari 5.1+, Chrome 10+ */
+    background: -webkit-linear-gradient(#DDDDDD, #CFCFCF); 
+    /* Opera 11.10+ */
+    background: -o-linear-gradient(top, #DDDDDD, #CFCFCF);
+	
+	
+	border: 1px solid #AAAAAA;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	
+	margin-bottom: 1%;
+	padding: 1%;
+	
+	cursor: pointer;
+	
+	font-size: 0.9em;
+}
+
+
+li li.selected{
+	background: #CFCFCF;
+}
+
+ul > li > ul{
+	list-style-position: inside;
+	margin-left: -4%;
+}
+
+h1{
+	
+}
+
+h2{
+	font-size: 1.1em;
+	font-weight: bold;
+}
+
+hr{
+	border: 1px solid #9A9A9A;
+	border-bottom: 1px solid #EEEEEE;
+	border-right: 1px solid #EEEEEE;
+	
+}
+
+fieldset{
+	border: 0;
+}
+
+#dizzy{
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: #FFF;
+	overflow: hidden !important; /* FF Scroll-leiste */ 
+	cursor: text;
+}
+
+#dizzy g.group:hover{
+	cursor: pointer;
+}
+
+#tools-main{
+	position: absolute;
+	top: 5%;
+	left: 1%;
+
+	
+	box-sizing: border-box;
+	
+	
+	overflow: visible;
+}
+
+#tools-main.expanded{
+	width: 98%;
+}
+
+.inactive{
+	opacity: 0.5;
+}
+#toolbar > .toolbutton.inactive:hover{
+		background: #AAAAAA;
+}
+
+#toolbar{
+	float: left;
+	overflow: visible;
+}
+
+#toolbar > .toolbutton {
+	width: 42px;
+	height: 42px;
+	
+	background: #AAAAAA;
+	border: 1px solid black;
+	
+	float: left;
+
+	font-weight: bold;
+	text-align:center;
+	
+	line-height: 42px;
+	
+	font-size: 13px;
+}
+#toolbar > .toolbutton.pressed, #toolbar > .toolbutton.pressed:hover{
+	background: #888888;
+}
+
+
+#toolbar > .toolbutton:hover {
+	background: #BBBBBB;
+}
+
+#toolbar > .toolbutton:hover {
+	cursor: pointer;	
+}
+
+#tools-main img{
+	vertical-align: middle;
+}
+/*
+ * Two buttons per line
+ */
+#toolbar > .toolbutton:nth-child(2n){
+	clear: left;
+}
+/*
+ * Remove double borders from two elements that are next to each other (horizontal or vertical)
+ */
+#toolbar > .toolbutton:nth-child(n+2){
+	border-top: 0;
+}
+#toolbar > .toolbutton:nth-child(2n+3){
+	border-left: 0;
+}
+
+/*
+ * Round first and last borders to make it a little nicer to look at (:
+ */
+ #toolbar > .toolbutton:first-child{
+	-webkit-border-top-right-radius: 3px;
+	-webkit-border-top-left-radius: 3px;
+	-moz-border-radius-topright: 3px;
+	-moz-border-radius-topleft: 3px;
+	border-top-right-radius: 3px;
+	border-top-left-radius: 3px;
+}
+#toolbar > .toolbutton:last-child{
+	-webkit-border-bottom-right-radius: 3px;
+	-webkit-border-bottom-left-radius: 3px;
+	-moz-border-radius-bottomright: 3px;
+	-moz-border-radius-bottomleft: 3px;
+	border-bottom-right-radius: 3px;
+	border-bottom-left-radius: 3px;
+}
+
+/*
+ * Two buttons that are twice as wide as normal buttons.
+ */
+#toolbar > .toolbutton.fullwidth {
+	width: 85px; /* +1 because all other buttons have a 1pxborder between them */
+	
+	height: 34px;
+	line-height: 34px;
+}
+/*
+ * Top toolmenu button
+ */
+#toolbar > #menu-button{
+	overflow: visible;
+	
+	color: #FFFFFF;
+	
+	background-color: #990000;
+    /* Firefox 3.6+ */
+    background: -moz-linear-gradient(5% 80% 90deg, #770000, #BB0000);
+    /* Safari 4+, Chrome 1+ */
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#BB0000), to(#770000));
+    /* Safari 5.1+, Chrome 10+ */
+    background: -webkit-linear-gradient(#BB0000, #770000); 
+    /* Opera 11.10+ */
+    background: -o-linear-gradient(top, #BB0000, #770000);
+}
+#toolbar > #menu-button:hover{
+	overflow: visible;
+	
+	color: #FFFFF;
+	
+	background-color: #AA0000;
+    /* Firefox 3.6+ */
+    background-image: -moz-linear-gradient(5% 80% 90deg, #880000, #CC0000);
+    /* Safari 4+, Chrome 1+ */
+    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#CC0000), to(#880000));
+    /* Safari 5.1+, Chrome 10+ */
+    background-image: -webkit-linear-gradient(#CC0000, #880000); 
+    /* Opera 11.10+ */
+    background-image: -o-linear-gradient(top, #CC0000, #880000);
+}
+
+
+/*
+ * bottom toolmenu button
+ */
+#toolbar > #present-toggle-button{
+	background-color: #CCCCCC;
+    /* Firefox 3.6+ */
+    background: -moz-linear-gradient(5% 80% 90deg,  #999999, #CCCCCC);
+    /* Safari 4+, Chrome 1+ */
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#CCCCCC), to(#999999));
+    /* Safari 5.1+, Chrome 10+ */
+    background: -webkit-linear-gradient(#CCCCCC, #999999); 
+    /* Opera 11.10+ */
+    background: -o-linear-gradient(top, #CCCCCC, #999999);
+}
+/*
+ * bottom toolmenu button
+ */
+#toolbar > #present-toggle-button:hover{
+	background-color: #DDDDDD;
+    /* Firefox 3.6+ */
+    background-image: -moz-linear-gradient(5% 80% 90deg,  #AAAAAA, #DDDDDD);
+    /* Safari 4+, Chrome 1+ */
+    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#DDDDDD), to(#AAAAAA));
+    /* Safari 5.1+, Chrome 10+ */
+    background-image: -webkit-linear-gradient(#DDDDDD, #AAAAAA); 
+    /* Opera 11.10+ */
+    background-image: -o-linear-gradient(top, #DDDDDD, #AAAAAA);
+}
+
+
+#menu{
+	float: left;
+	top: 0;
+
+	width: 90%;
+}
+
+
+
+#menu > * {
+	border: 1px solid black;
+	border-left: 0;
+	
+	border-radius: 2px;
+	-moz-border-radius: 2px;
+	
+	background: #FFF;
+}
+
+#menu > #menu-left{
+	float: left;
+	
+	width: 60%;
+	
+	padding: 0;
+	padding-right: 1%;
+	
+
+	
+	box-sizing:inherit;
+	
+	
+}
+
+#menu > #menu-right{
+	float: left;
+	width: 25%;
+	
+	box-sizing:inherit;
+	padding: 1%;
+	
+	overflow: hidden;
+}
+
+#menu-left  #open-extended{
+
+}
+
+
+
+.hidden{
+	display: none;
+	overflow: hidden;
+}
+
+#menu-left  #open-extended:hover{
+	height: auto;
+}
+
+
+#menu-style-css-input{
+	width: 98%;
+}
+
+
+/*
+ * Zebra styling.
+ */
+#zebra{
+	position: absolute;
+	top: 30%;
+	left: 50%;
+	
+	width: 100px;
+	height: 100px;
+	
+	display: none;
+}
+
+#zebra-inner{
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+#zebra #zebra-translate{
+	position: absolute;
+	
+	top: 2px;
+	left: 2px;
+	width: 60px;
+	height: 60px;
+	background-image: url('../images/bg_zebra_translate.png');
+
+	
+
+	-moz-border-radius: 100%;
+	border-radius: 100%;
+	
+	cursor: move;
+
+}
+
+
+#zebra #zebra-scale{
+	position: absolute;
+	
+	top: 3px;
+	left: 3px;
+	width: 64px; /* 100px - (3 [margins] + 12 [border])*2 */
+	height: 64px;
+	background: transparent;
+	
+	border: 15px solid #CCCCCC;
+
+	-moz-border-radius: 92px;
+	border-radius: 92px;
+}
+
+
+
+#zebra #zebra-rotate{
+	position: absolute;
+	
+	top: 0;
+	left: 0;
+	
+	width: 100px;
+	height: 100px;
+	background: transparent;
+	
+	border: 20px dotted #AAAAAA;
+	
+	-moz-border-radius: 100px;
+	border-radius: 100px;
+	
+		
+
+}
+
+#zebra #zebra-expand-button{
+	position: absolute;
+	right: -40px;
+	top: 58px;
+	
+	width: 12px;
+	height: 12px;
+
+	
+	text-align: center;
+	font-weight: bolder;
+	font-size: 18px;
+
+	line-height: 10px;
+
+	border: 1px solid #000;
+	background: #888888;
+
+	-moz-border-radius: 12px;
+	border-radius: 12px;
+	
+	cursor: pointer;
+}
+#zebra #zebra-expand-button:hover{
+	background: #9F9F9F;
+}

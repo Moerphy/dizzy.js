@@ -3,7 +3,7 @@
  * http://dizzy.metafnord.org
  * 
  * Version: 0.3.0
- * Date: 04/05/2011
+ * Date: 02/07/2011
  * 
  * licensed under the terms of the MIT License
  * http://www.opensource.org/licenses/mit-license.html
@@ -28,13 +28,15 @@ Dizzy =	(function(D, window, document, undefined){
 		var selectedGroup;
 		var selectedTarget;
 		var that = this;
-		
+		var isEditorMode = false;
 		/**
 		 * Toggles the editor-mode on the current SVG.
 		 * @param {boolean} enable true to turn editor-mode on, false to turn it off.
 		 */
 		DizzyEditor.prototype.editor = function(enable){
+         isEditorMode = enable;
 			if( enable === true ){
+            
 				// backup old values
 				if(dizzyOptionsBackup === undefined){
 					dizzyOptionsBackup = { 
@@ -72,6 +74,10 @@ Dizzy =	(function(D, window, document, undefined){
 				that.editorPathMode(false);
 			}
 		};
+      
+      DizzyEditor.prototype.isEditing = function(){
+         return isEditorMode;
+      };
 		
 		
 		/*
@@ -296,14 +302,15 @@ Dizzy =	(function(D, window, document, undefined){
 		 * TODO: load dynamicly if not present.
 		 */
 		var loadZebra = function(){
-			$( 'svg#zebra', that.svg.root() ).hide();
+			// just a dummy since I stripped the zebra from the svg (:
 		};
 		/**
 		 * Removes Zebra from SVG.
 		 */
 		var removeZebra = function(){
-			$( '#zebra', that.svg.root() ).remove();
+			// just a dummy since I stripped the zebra from the svg (:
 		};
+		
 		
 		
 		/*
@@ -316,13 +323,13 @@ Dizzy =	(function(D, window, document, undefined){
 		 * Starts scaling. Called on mousedown on the inner ring of the zebra.
 		 */
 		var zebraScaleStart = function(event){
-			var zebra = $('#zebra', that.svg.root());
+			var zebra = $('#zebra');
 			var groupMatrix = that.getTransformationMatrix(selectedGroup[0]);
-			zebraScaleInfo = { matrix: groupMatrix, xa: parseFloat(zebra.attr('x'))+100, ya: parseFloat(zebra.attr('y'))+100 };
+			zebraScaleInfo = { matrix: groupMatrix, xa: parseFloat(zebra.css('left'))+75, ya: parseFloat(zebra.css('top'))+75 };
 			
-			$( that.svg.root() ).bind('mousemove.dizzy.editor.scale', function(ev){ return zebraScale(ev); } );
+			$( document ).bind('mousemove.dizzy.editor.scale', function(ev){ return zebraScale(ev); } );
 			var end = function(ev){ return zebraScaleEnd(ev); };
-			$( that.svg.root() ).bind( 'mouseup.dizzy.editor', end );
+			$( document ).bind( 'mouseup.dizzy.editor', end );
 			//$( that.svg.root() ).mouseout( end );
 		
 			return false;
@@ -332,7 +339,7 @@ Dizzy =	(function(D, window, document, undefined){
 			var svgPoint = { x: event.pageX, y: event.pageY};
 			
 			var cVector = { x: zebraScaleInfo.xa - svgPoint.x, y: zebraScaleInfo.ya - svgPoint.y };
-			var cVectorLength = Math.sqrt( cVector.x*cVector.x +  cVector.y*cVector.y ) / 60; // 60 is about the radius of the scale circle
+			var cVectorLength = Math.sqrt( cVector.x*cVector.x +  cVector.y*cVector.y ) / 40; // 40 is about the radius of the scale circle
 		
 			var groupMatrix = that.getTransformationMatrix(selectedGroup[0]);
 			
@@ -347,8 +354,8 @@ Dizzy =	(function(D, window, document, undefined){
 		};
 		
 		var zebraScaleEnd = function(event){
-			$( that.svg.root() ).unbind('mousemove.dizzy.editor.scale');
-			$( that.svg.root() ).unbind( 'mouseup.dizzy.editor');
+			$( document ).unbind('mousemove.dizzy.editor.scale');
+			$( document ).unbind( 'mouseup.dizzy.editor');
 	
 			return false;
 		};
@@ -364,9 +371,9 @@ Dizzy =	(function(D, window, document, undefined){
 			
 			zebraTranslateInfo = { x: svgPoint.x, y: svgPoint.y, matrix: groupMatrix };
 			
-			$( that.svg.root() ).bind('mousemove.dizzy.editor.zebra.translate', function(ev){ return zebraTranslate(ev); } );
+			$( document ).bind('mousemove.dizzy.editor.zebra.translate', function(ev){ return zebraTranslate(ev); } );
 			var zebraTranslateEndFunction = function(ev){ return zebraTranslateEnd(ev); };
-			$( that.svg.root() ).bind( 'mouseup.dizzy.editor.zebra.translate', zebraTranslateEndFunction );
+			$( document ).bind( 'mouseup.dizzy.editor.zebra.translate', zebraTranslateEndFunction );
 			return false;
 		};
 		
@@ -383,17 +390,17 @@ Dizzy =	(function(D, window, document, undefined){
 			selectedGroup.attr('transform', 'matrix('+newMatrix.a+' '+newMatrix.b+' '+newMatrix.c+' '+newMatrix.d+' '+newMatrix.e+' '+newMatrix.f+')');
 			zebraTranslateInfo.matrix = newMatrix;
 			
-			var zebra = $('#zebra', that.svg.root());
+			var zebra = $('#zebra');
 			var coords = that.transformCoordinates(event.pageX,event.pageY, $(that.svg.root()), true);
-			zebra.attr('x', coords.x-100);
-			zebra.attr('y', coords.y-100);
+			zebra.css('left', coords.x-75);
+			zebra.css('top', coords.y-75);
 			
 			return false;
 		};
 		
 		var zebraTranslateEnd = function(event){
-			$( that.svg.root() ).unbind('mousemove.dizzy.editor.zebra.translate');
-			$( that.svg.root() ).unbind('mouseup.dizzy.editor.zebra.translate');
+			$( document ).unbind('mousemove.dizzy.editor.zebra.translate');
+			$( document ).unbind('mouseup.dizzy.editor.zebra.translate');
 			return false;
 		};
 			
@@ -402,10 +409,10 @@ Dizzy =	(function(D, window, document, undefined){
 	
 		var zebraRotateInfo = {};
 		var zebraRotateStart = function(event){
-			var zebra = $('svg#zebra', that.svg.root());
+			var zebra = $('#zebra');
 			var groupMatrix = that.getTransformationMatrix(selectedGroup[0]);
-			var x1 = parseFloat(zebra.attr('x'))+100;
-			var y1 = parseFloat(zebra.attr('y'))+100;
+			var x1 = parseFloat(zebra.css('left'))+75;
+			var y1 = parseFloat(zebra.css('top'))+75;
 			zebraRotateInfo = { 
 						xa: x1,
 						ya: y1,
@@ -426,7 +433,7 @@ Dizzy =	(function(D, window, document, undefined){
 		};
 		
 		var zebraRotate = function(event){
-			var zebra = $('svg#zebra', that.svg.root());
+			var zebra = $('#zebra');
 			
 			var newVector = {
 				x: event.pageX - zebraRotateInfo.xa,
@@ -444,7 +451,11 @@ Dizzy =	(function(D, window, document, undefined){
 										rotate(angle).
 										translate(-xTranslate, -yTranslate);
 		
-			$( '#zebra_rotate', that.svg.root() ).animate({svgTransform: 'rotate('+angle+', 50, 50)'}, 0);
+         var vendorprefixes = ['','-o-', '-webkit-', '-moz-', '-ms-'];
+         for( var i = 0; i < vendorprefixes.length; ++i ){
+            $( '#zebra-rotate').css(vendorprefixes[i]+'transform', 'rotate('+angle+'deg)');
+         }
+      
 			selectedGroup.attr('transform', 'matrix('+newMatrix.a+' '+newMatrix.b+' '+newMatrix.c+' '+newMatrix.d+' '+newMatrix.e+' '+newMatrix.f+')');
 			
 			return false;
@@ -461,12 +472,12 @@ Dizzy =	(function(D, window, document, undefined){
 	
 	
 		var showZebra = function(ev){
-			var svgRoot = that.svg.root();
-			var zebra = $( 'svg#zebra', svgRoot );
+         var svgRoot = that.svg.root();
+			var zebra = $( '#zebra' );
 			zebra.css('opacity', '0.9');
-			$( 'svg#zebra #zebra_rotate', svgRoot ).mousedown( function(ev){ return zebraRotateStart(ev); } );
-			$( 'svg#zebra #zebra_scale', svgRoot ).mousedown( function(ev){ return zebraScaleStart(ev); } );
-			$( 'svg#zebra #zebra_translate', svgRoot ).mousedown( function(ev){ return zebraTranslateStart(ev); } );
+			$( '#zebra  #zebra-rotate').mousedown( function(ev){ return zebraRotateStart(ev); } );
+			$( '#zebra #zebra-scale').mousedown( function(ev){ return zebraScaleStart(ev); } );
+			$( '#zebra #zebra-translate').mousedown( function(ev){ return zebraTranslateStart(ev); } );
 			
 			var group = $( ev.currentTarget.parentNode, svgRoot );
 			
@@ -480,9 +491,9 @@ Dizzy =	(function(D, window, document, undefined){
 			// mark group
 			group.css('opacity', '0.5');
 		
-			// display zebra somewhere on that element
-			zebra.attr('x',ev.pageX-100);
-			zebra.attr('y',ev.pageY-100);
+			// display zebra at the mouse position
+			zebra.css('left',ev.pageX-75);
+			zebra.css('top',ev.pageY-75);
 			zebra.show();
 			
 			$('svg, #canvas', svgRoot).bind('mousedown.dizzy.editor.hidezebra', function(ev){ hideZebra(ev); } );
@@ -491,8 +502,8 @@ Dizzy =	(function(D, window, document, undefined){
 		};
 		
 		var hideZebra = function(ev){
-			$( 'svg#zebra', that.svg.root() ).css('opacity', '');
-			$( 'svg#zebra', that.svg.root() ).hide();
+			$( '#zebra' ).css('opacity', '');
+			$( '#zebra' ).hide();
 			
 			if( typeof selectedGroup !== 'undefined' ){
 				selectedGroup.css('opacity', '1');
@@ -502,7 +513,7 @@ Dizzy =	(function(D, window, document, undefined){
 			return true;
 		};
 	
-	
+      DizzyEditor.prototype.hideZebra = hideZebra;
 		
 		
 			
@@ -521,10 +532,8 @@ Dizzy =	(function(D, window, document, undefined){
 				group.attr('transform', 'matrix('+matrix.a+' '+matrix.b+' '+matrix.c+' '+matrix.d+' '+matrix.e+' '+matrix.f+')');
 				var text = $(that.svg.other(group, 'text'));
 				var textSpan = $(that.svg.other(selectedTarget, 'tspan'));
-				text.attr('text-anchor', 'middle')
-					.attr('font-size', '100')
-					.attr('y', $(document).height()/2);
-				textSpan.attr('x', $(document).width()/2);
+				text.attr('y', '50%');
+				textSpan.attr('x', '50%');
 				
 				text.append(textSpan);
 				group.append(text);
@@ -551,7 +560,7 @@ Dizzy =	(function(D, window, document, undefined){
 			if( typeof node !== 'undefined' ){
 				if(ev.which === 13 ){ // enter (multiline text)
 					var textSpan = $(that.svg.other(node, 'tspan'));
-					textSpan.attr('x', $(document).width()/2).attr('dy','80');
+					textSpan.attr('x', '50%').attr('dy','80');
 					
 					//that.hideZebra(); // does make some problems
 				}else if(ev.which === 46 || (ev.which === 0 && ev.keyCode === 46) ){ // delete key -> remove group
@@ -559,6 +568,7 @@ Dizzy =	(function(D, window, document, undefined){
 					hideZebra();
 				}else if( ev.which === 8 ){ // backspace
 					var spanNode = node.children().last();
+               var group = node.parent();
 					var oldText = spanNode.text();
 					
 					if( oldText.length !== 0 ){ // delete last char

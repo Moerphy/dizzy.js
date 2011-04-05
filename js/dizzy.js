@@ -3,7 +3,7 @@
  * http://dizzy.metafnord.org
  * 
  * Version: 0.4.0
- * Date: 04/05/2011
+ * Date: 02/07/2011
  * 
  * licensed under the terms of the MIT License
  * http://www.opensource.org/licenses/mit-license.html
@@ -116,7 +116,7 @@ var Dizzy =	(function(window, document, undefined){
 						if( typeof callback !== 'undefined' ){
 							callback();
 						}
-						$(that.svg).trigger('ready.dizzy');
+						$(that.container).trigger('ready.dizzy');
 					})
 			});
 			return this;
@@ -198,38 +198,40 @@ var Dizzy =	(function(window, document, undefined){
 		 * matrices of all parent g.group's up to the canvas group (excluding)
 		 */
 		Dizz.prototype.getTransformationMatrix = function(node){
-			var activeGroupTransformBase = node.transform.baseVal; // TODO multiple nodes with that class? shouldn't happen, but it will...
-			
-			if( activeGroupTransformBase.numberOfItems === 0 ){
-				 var newTransform = that.svg.root().createSVGTransform();
-				 activeGroupTransformBase.appendItem(newTransform);
-			}
-			var activeGroupTransformMatrix =  activeGroupTransformBase.consolidate().matrix;
-			// subgroups have to be "de-transformed" with the transformations of their parents
-			var parentGroups = $(node).parentsUntil('g#canvas, svg');
-			
-			/* 
-			 * iterate over parents in the DOM until you hit the #canvas-group
-			 * multiply parent transformation matrix to undo all of them too..
-			 */
-			parentGroups.each(	function(index){
-									var parent = $(this);
-									var parentBase = parent[0].transform;
-									if( typeof parentBase !== 'undefined' ){
-										parentBase = parentBase.baseVal;
-									}
-									if( parentBase.numberOfItems === 0 ){
-										var newTransform = that.svg.root().createSVGTransform();
-										parentBase.appendItem(newTransform);
-									}
-									var parentMatrix = parentBase.consolidate().matrix;
-									// careful with the order of operands on the multiplication
-									// matrix multiplications are not commutative!
-									activeGroupTransformMatrix = parentMatrix.multiply(activeGroupTransformMatrix);
-									
-								});
-			
-			return activeGroupTransformMatrix;
+         if( typeof node !== 'undefined' ){
+            var activeGroupTransformBase = node.transform.baseVal; // TODO multiple nodes with that class? shouldn't happen, but it will...
+            
+            if( activeGroupTransformBase.numberOfItems === 0 ){
+                var newTransform = that.svg.root().createSVGTransform();
+                activeGroupTransformBase.appendItem(newTransform);
+            }
+            var activeGroupTransformMatrix =  activeGroupTransformBase.consolidate().matrix;
+            // subgroups have to be "de-transformed" with the transformations of their parents
+            var parentGroups = $(node).parentsUntil('g#canvas, svg');
+            
+            /* 
+             * iterate over parents in the DOM until you hit the #canvas-group
+             * multiply parent transformation matrix to undo all of them too..
+             */
+            parentGroups.each(	function(index){
+                              var parent = $(this);
+                              var parentBase = parent[0].transform;
+                              if( typeof parentBase !== 'undefined' ){
+                                 parentBase = parentBase.baseVal;
+                              }
+                              if( parentBase.numberOfItems === 0 ){
+                                 var newTransform = that.svg.root().createSVGTransform();
+                                 parentBase.appendItem(newTransform);
+                              }
+                              var parentMatrix = parentBase.consolidate().matrix;
+                              // careful with the order of operands on the multiplication
+                              // matrix multiplications are not commutative!
+                              activeGroupTransformMatrix = parentMatrix.multiply(activeGroupTransformMatrix);
+                              
+                           });
+            
+            return activeGroupTransformMatrix;
+         }
 		};
 		
 		
@@ -333,7 +335,8 @@ var Dizzy =	(function(window, document, undefined){
 			var svgPoint = that.svg.root().createSVGPoint();
 			svgPoint.x = x;
 			svgPoint.y = y;
-			if( typeof node[0].transform !== 'undefined' && 
+			if( typeof node[0] !== 'undefined' &&
+            typeof node[0].transform !== 'undefined' && 
 				typeof node[0].transform.baseVal.consolidate() !== 'undefined' ){
 				
 				var canvasMatrix = node[0].transform.baseVal.consolidate().matrix;
