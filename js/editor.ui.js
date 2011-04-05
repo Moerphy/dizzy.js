@@ -1,3 +1,13 @@
+/*
+ * editor.ui of dizzy.js 
+ * http://dizzy.metafnord.org
+ * 
+ * Date: 04/05/2011
+ * 
+ * licensed under the terms of the MIT License
+ * http://www.opensource.org/licenses/mit-license.html
+ */
+
 $(function(){
 	$('#dizzy').height($(document).height());
 	$('#dizzy').width($(document).width());

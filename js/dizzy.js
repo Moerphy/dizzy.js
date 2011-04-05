@@ -3,7 +3,7 @@
  * http://dizzy.metafnord.org
  * 
  * Version: 0.4.0
- * Date: 02/07/2011
+ * Date: 04/05/2011
  * 
  * licensed under the terms of the MIT License
  * http://www.opensource.org/licenses/mit-license.html
