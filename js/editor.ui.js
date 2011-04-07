@@ -23,31 +23,6 @@ $(function(){
 
 	
 
-	/*
-	 * Menubar event handlers
-	 */
-	/*
-	 * Help
-	 */
-	var dialogWidth = $(document).width()/2;
-	var maxH = $(document).height()/2;
-	$('#helpDialog').dialog({autoOpen: false, modal:true, width: dialogWidth, height: maxH, maxHeight: maxH});
-	$('#helpButton').bind('click', 
-		function(){
-		$('#helpDialog').dialog('open');
-		}
-	);
-	
-	/*
-	 * About
-	 */
-	$('#aboutDialog').dialog({autoOpen: false, modal:true, width: dialogWidth, height: maxH, maxHeight: maxH});
-	$('#aboutButton').bind('click', 
-		function(){
-			$('#aboutDialog').dialog('open');
-
-		}
-	);
 	
       
    /*
@@ -91,6 +66,22 @@ $(function(){
 		}
 	); 
       
+   $('#tool-image').bind('click', function(){
+      dizz.editor(false);
+      var overlay = $('#overlay, #overlay-dialog-input');
+      overlay.removeClass('hidden');
+      
+      var insertButton = overlay.children('input[type="button"]');
+      insertButton.bind('click', function(){ 
+         $(this).unbind('click'); 
+         dizz.addImage( overlay.children('#overlay-dialog-input-field').val() ); 
+         overlay.addClass('hidden');
+         dizz.editor(true);
+      });
+      
+     // dizz.addImage();
+   });
+      
       
       
    /*
@@ -132,8 +123,8 @@ $(function(){
          var openSVGFile = file[0];
          reader.onload = function(e){ 
             dizz.load( e.target.result, function(){
-               dizz.editor(true);
                toggleMenu();
+               dizz.editor(true);
             });
          };
          reader.readAsText(openSVGFile);
@@ -159,6 +150,30 @@ $(function(){
    
    
    
-
+   $('#zebra-expand-button').bind('click', function(){
+      $('#zebra-toolbar').toggleClass('hidden');
+      $(this).toggleClass('mirrored');
+   });
+   
+   
+   /*
+    * Zebra toolbar
+    */
+   $('#zebra-toolbar-up').bind('click', function(){
+      dizz.raiseLayer();
+   });
+   $('#zebra-toolbar-down').bind('click', function(){
+      dizz.lowerLayer();
+   });
+   
+   /*
+    * Overlay
+    */
+   $('.overlay-close').bind('click', function(){
+      $('#overlay').addClass('hidden');
+      dizz.editor(true);
+   });
+   
+   
 	
 });

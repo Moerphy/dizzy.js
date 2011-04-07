@@ -8,18 +8,15 @@
       <link type="text/css" rel="stylesheet" href="./css/editor.css" />
       <!--  contains jquery, jquery mousewheel and jquery svg -->
       <script type="text/javascript" src="./js/jquery/jquery.full.min.js"></script>
-      <script type="text/javascript" src="./js/jquery/jquery-ui.min.js"></script>
 
       <script type="text/javascript" src="./js/dizzy.js"></script>
       <script type="text/javascript" src="./js/dizzy.editor.js"></script>
-
-      <script type="text/javascript" src="./js/dizzy.editor.tools.js"></script>
       <!--
             <script type="text/javascript" src="./js/dizzy.full.min.js"></script>
             -->
       <script type="text/javascript" src="./js/editor.ui.js"></script>
    </head>
-   <body>
+    <body>
       <!--  Canvas-->
       <div id="dizzy"></div>
       
@@ -30,7 +27,18 @@
                <div id="zebra-translate"></div>
             </div>
          </div>
-         <div id="zebra-expand-button" class="hidden">&rsaquo;</div>
+         
+         <div id="zebra-expand-button">&rsaquo;</div>
+         <div id="zebra-toolbar" class="hidden">
+            <div class="zebra-toolbar-row">
+               <div class="toolbutton" id="zebra-toolbar-up" title="Raise group one level"><img src="./images/zebra_tool_up.png" alt="arrow up icon" /></div>
+               <div class="toolbutton" id="zebra-toolbar-down" title="Lower group one level"><img src="./images/zebra_tool_down.png" alt="arrow down icon" /></div>
+               <div class="toolbutton inactive" id="zebra-toolbar-group" title="Add another group"><img src="./images/zebra_tool_group.png" alt="group icon" /></div>
+               <div class="toolbutton inactive" id="zebra-toolbar-ungroup" title="Split into single groups for every item"><img src="./images/zebra_tool_ungroup.png" alt="ungroup icon" /></div>
+               <div class="toolbutton inactive" id="zebra-toolbar-color" title="Choose colors for this group"><img src="./images/zebra_tool_color.png" alt="color icon" /></div>
+               
+            </div>
+         </div>
       </div>
       
       <div id="tools-main">
@@ -47,7 +55,7 @@
             <div class="toolbutton inactive" id="tool-arrow" title="Draw arrows" ><img src="./images/tool_arrow.png" alt="draw arrow mode" /></div>
             
             <div class="toolbutton inactive" id="tool-bracket" title="Draw brackets" >[ ]</div>
-            <div class="toolbutton inactive" id="tool-image" title="Insert an image"><img src="./images/tool_image_add.png" alt="insert image button" /></div>
+            <div class="toolbutton" id="tool-image" title="Insert an image"><img src="./images/tool_image_add.png" alt="insert image button" /></div>
             
             <div class="toolbutton inactive" id="tool-circle" title="Draw ellipses"><img src="./images/tool_circle.png" alt="draw ellipse mode" /></div>
             <div class="toolbutton inactive" id="tool-formula" title="Insert a formula"><img src="./images/tool_formula.png" alt="insert formula button" /></div>
@@ -146,6 +154,14 @@
       
       
       
+      <div id="overlay" class="hidden" >
+         <div id="overlay-dialog-input" class="overlay-dialog hidden">
+            <div class="overlay-close">x</div>
+            Paste an image URL in the textbox below.<br /><br />
+            <label for="overlay-dialog-input-field">Image URL: </label><br />
+            <input type="text" value="http://placekitten.com/300/200"  id="overlay-dialog-input-field" /><input type="button" value="Insert image" />
+         </div> 
+      </div>
       
       
    </body>

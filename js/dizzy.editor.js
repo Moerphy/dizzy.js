@@ -79,7 +79,15 @@ Dizzy =	(function(D, window, document, undefined){
          return isEditorMode;
       };
 		
-		
+		DizzyEditor.prototype.lowerLayer = function(){
+         var node = selectedGroup;
+         node.insertBefore(node.prev('g.group'));
+      };
+      DizzyEditor.prototype.raiseLayer = function(){
+         var node = selectedGroup;
+         node.insertAfter(node.next('g.group'));
+      };
+      
 		/*
 		 * ----------------------
 		 * Private methods
@@ -489,7 +497,7 @@ Dizzy =	(function(D, window, document, undefined){
 			selectedTarget = $(ev.currentTarget, svgRoot);
 			
 			// mark group
-			group.css('opacity', '0.5');
+			group.css('opacity', '0.6');
 		
 			// display zebra at the mouse position
 			zebra.css('left',ev.pageX-75);
@@ -512,9 +520,8 @@ Dizzy =	(function(D, window, document, undefined){
 			selectedTarget = undefined;
 			return true;
 		};
-	
-      DizzyEditor.prototype.hideZebra = hideZebra;
-		
+	   DizzyEditor.prototype.hideZebra = hideZebra;
+      
 		
 			
 		/**
@@ -560,7 +567,7 @@ Dizzy =	(function(D, window, document, undefined){
 			if( typeof node !== 'undefined' ){
 				if(ev.which === 13 ){ // enter (multiline text)
 					var textSpan = $(that.svg.other(node, 'tspan'));
-					textSpan.attr('x', '50%').attr('dy','80');
+					textSpan.attr('x', '50%').attr('dy', window.getComputedStyle(textSpan[0], null).getPropertyValue('font-size') );
 					
 					//that.hideZebra(); // does make some problems
 				}else if(ev.which === 46 || (ev.which === 0 && ev.keyCode === 46) ){ // delete key -> remove group
@@ -635,9 +642,11 @@ Dizzy =	(function(D, window, document, undefined){
 			};
 			image.src = data;
 		};
+       DizzyEditor.prototype.addImage = addImage;
 	}
-	
-	
+
+   
+   
 	return DizzyEditorWrapper;
 })(Dizzy, window, document);
 
