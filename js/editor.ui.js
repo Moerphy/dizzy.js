@@ -13,16 +13,13 @@ $(function(){
 		
 		dizz.load(uri, 
 			function(){ 
+            this.switchPlugin('editor');
 				dizz.show(0);
-				dizz.editor(true);
             // load default css in edit-box
             $('#menu-style-css-input').val( $('#dizzy-internal-style').text() );
 			} );
 	}
 	var toolbar = $('#toolbar');
-
-	
-
 	
       
    /*
@@ -31,52 +28,92 @@ $(function(){
    function selectButton(node){
       $(node).siblings().removeClass('pressed');
 		$(node).addClass('pressed');
-      dizz.hideZebra();
+      //dizz.hideZebra();
    }
    $('#tool-default').click( function(e){ 
-		dizz.editorDefaultMode(true); 
+		dizz.switchPlugin('editor'); 
 		selectButton(this);
 	} );
    $('#tool-path').click( function(e){ 
-		dizz.editorPathMode(true); 
+		dizz.switchPlugin('editor.path'); 
+		selectButton(this);
+	} );
+   $('#tool-circle').click( function(e){ 
+		dizz.switchPlugin('editor.circles'); 
+		selectButton(this);
+	} );
+   $('#tool-line').click( function(e){ 
+		dizz.switchPlugin('editor.lines');
 		selectButton(this);
 	} );
    
    /*
     * previous- and next-buttons in presentation mode
     */
+
    $('#tool-previous').click( function(e){ 
-		dizz.previous(); 
+		dizz.previous();
 	} );  
    $('#tool-next').click( function(e){ 
-		dizz.next(); 
+		dizz.next();
 	} );     
       
+   var mouseMoved = false;
+   var mouseMovedTimeout = 0;
+   var mouseInterval = 500;
    $('#present-toggle-button').toggle(
-		function(){ 
-         dizz.editor(false); 
+      function(){ 
+         dizz.switchPlugin('presentation');
+         mouseMovedTimeout = setTimeout( checkMouseMove, mouseInterval );
+         $(document).bind('mousemove', function(){ mouseMoved = true; } );
+         $(document).bind('keydown.presentation.navigation', function(ev){ presentationKeypress(ev); } );
          $('.toolbutton').not('.fullwidth').toggleClass('hidden');
-			$('#present-toggle-button').children('span').text('End'); 
-		},
-		function(){ 
-			dizz.editor(true); 
+         $('#present-toggle-button').children('span').text('End'); 
+      },
+      function(){ 
+         dizz.switchPlugin('editor');
+         clearTimeout( mouseMovedTimeout );
          selectButton($('#tool-default'));
-			$('.toolbutton').not('.fullwidth').toggleClass('hidden');
-			$('#present-toggle-button').children('span').text('Present');
-		}
-	); 
+         $(document).unbind('keydown.presentation.navigation');
+         $('.toolbutton').not('.fullwidth').toggleClass('hidden');
+         $('#present-toggle-button').children('span').text('Present');
+      }
+   ); 
+
+   function presentationKeypress(e){
+      if( e.which === 32 || e.which === 39 ){
+         dizz.next();
+      }else if( e.which === 37 ){
+         dizz.previous();
+      }
+   }
+   function checkMouseMove(){
+      if( mouseMoved === true ){
+         mouseMoved = false;
+         $('#toolbar').removeClass('invisible');
+      }else{
+         $('#toolbar').addClass('invisible');
+      }
+      mouseMovedTimeout = setTimeout( checkMouseMove, mouseInterval );
+   }
       
    $('#tool-image').bind('click', function(){
-      dizz.editor(false);
+      dizz.savePluginState();
+      
+      dizz.switchPlugin('nop');
       var overlay = $('#overlay, #overlay-dialog-input');
       overlay.removeClass('hidden');
       
       var insertButton = overlay.children('input[type="button"]');
       insertButton.bind('click', function(){ 
          $(this).unbind('click'); 
-         dizz.addImage( overlay.children('#overlay-dialog-input-field').val() ); 
+         
+         dizz.switchPlugin('editor');
+         
+         $(document).trigger( 'addImage', [overlay.children('#overlay-dialog-input-field').val()] ); 
+         
          overlay.addClass('hidden');
-         dizz.editor(true);
+         dizz.restorePluginState();
       });
       
      // dizz.addImage();
@@ -87,11 +124,19 @@ $(function(){
    /*
     * Menu
     */
+   var backupActivePlugin;
    var menuRightDefaultText;
    function toggleMenu(){
       $('#menu').toggleClass('hidden');
       $('#tools-main').toggleClass('expanded');
-      dizz.editor(!dizz.isEditing());
+      
+      if( isUndefined(backupActivePlugin) ){
+         backupActivePlugin = dizz.activePlugin;
+      }else{
+         dizz.switchPlugin(backupActivePlugin);
+         backupActivePlugin = undefined;
+      }
+
       menuRightDefaultText = menuRightDefaultText||$('#menu-right').text();
       $('#menu-right').html(menuRightDefaultText);
    }
@@ -124,7 +169,7 @@ $(function(){
          reader.onload = function(e){ 
             dizz.load( e.target.result, function(){
                toggleMenu();
-               dizz.editor(true);
+               dizz.switchPlugin('editor');
             });
          };
          reader.readAsText(openSVGFile);
@@ -132,7 +177,7 @@ $(function(){
    });
    
    $('#menu-save').bind('click', function(evt){
-      dizz.editor(false);
+      dizz.switchPlugin(presentation);
       var svgProlog = '<?xml version="1.0" encoding="UTF-8"?>';
 
       var svgText = dizz.serialize();
@@ -155,23 +200,12 @@ $(function(){
       $(this).toggleClass('mirrored');
    });
    
-   
-   /*
-    * Zebra toolbar
-    */
-   $('#zebra-toolbar-up').bind('click', function(){
-      dizz.raiseLayer();
-   });
-   $('#zebra-toolbar-down').bind('click', function(){
-      dizz.lowerLayer();
-   });
-   
    /*
     * Overlay
     */
    $('.overlay-close').bind('click', function(){
       $('#overlay').addClass('hidden');
-      dizz.editor(true);
+      dizz.switchPlugin('editor');
    });
    
    

@@ -79,12 +79,25 @@ fieldset{
 	left: 0;
 	background: #FFF;
 	overflow: hidden !important; /* FF Scroll-leiste */ 
-	cursor: text;
+	
 }
 
 #dizzy g.group:hover{
 	cursor: pointer;
 }
+
+#dizzy svg.drawing{
+	cursor: url(../images/cursor_draw.png), crosshair;
+}
+
+#dizzy svg.editor{
+	cursor: text;
+}
+
+#dizzy svg.path g.group:hover{
+	cursor: url(../images/cursor_path.png), pointer;
+}
+
 
 #tools-main{
 	position: absolute;
@@ -106,21 +119,40 @@ fieldset{
 	opacity: 0.5;
 }
 #toolbar > .toolbutton.inactive:hover{
-		background: #AAAAAA;
+	background: #AAAAAA;
 }
 
 #toolbar{
 	float: left;
 	overflow: visible;
+	
+	-ms-transition: 0.8s opacity ease-in-out;
+	-o-transition: 0.8s opacity ease-in-out;
+	-webkit-transition: 0.8s opacity ease-in-out;
+	-moz-transition: 0.8s opacity ease-in-out;
+	transition: 0.8s opacity ease-in-out;
+	
+	opacity: 1;
+}
+
+#toolbar.invisible{
+	opacity: 0;
+}
+
+.toolbutton, #toolbar, #zebra-toolbar  {
+	background: #AAAAAA;
+	
 }
 
 .toolbutton{
 	float: left;
-	background: #AAAAAA;
+
 	
 	font-weight: bold;
 	text-align:center;
 }
+
+
 
 #toolbar > .toolbutton {
 	width: 42px;
