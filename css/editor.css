@@ -69,7 +69,7 @@ hr{
 	
 }
 
-fieldset{
+#menu fieldset{
 	border: 0;
 }
 
@@ -77,7 +77,6 @@ fieldset{
 	position: absolute;
 	top: 0;
 	left: 0;
-	background: #FFF;
 	overflow: hidden !important; /* FF Scroll-leiste */ 
 	
 }
@@ -91,7 +90,7 @@ fieldset{
 }
 
 #dizzy svg.editor{
-	cursor: text;
+	cursor: auto;
 }
 
 #dizzy svg.path g.group:hover{
@@ -180,10 +179,22 @@ fieldset{
 .toolbutton img{
 	vertical-align: middle;
 }
+
+input[type="color"]{
+	width: 30px;
+	height: 20px;
+	cursor: pointer;
+	border: 1px solid black;
+}
+
+.textHidden{
+	color: rgba(255,255,255,0.0);
+}
+
 /*
  * Two buttons per line
  */
-#toolbar > .toolbutton:nth-child(2n){
+#toolbar > .toolbutton:nth-child(2n), .toolbutton.fullwidth{
 	clear: left;
 }
 /*
@@ -194,6 +205,10 @@ fieldset{
 }
 #toolbar > .toolbutton:nth-child(2n+3){
 	border-left: 0;
+}
+
+#toolbar > .toolbutton:last-child{
+	border-left: 1px solid black;
 }
 
 /*
@@ -474,7 +489,7 @@ fieldset{
 	top: 52px;
 	left: 145px;
 	
-	width: 164px;
+	width: 66px;
 
 	
 	border: 1px solid black;
@@ -526,6 +541,10 @@ fieldset{
 	
 	background: rgba(0,0,0,0.6);
 }
+#overlay a{
+	font-weight: normal;
+}
+
 
 #overlay .overlay-dialog{
 	background: #FFFFFF;
@@ -536,11 +555,10 @@ fieldset{
 
 #overlay #overlay-dialog-input{
 	position: absolute;
-	top: 35%;
-	left: 38%;
+	top: 25%;
+	left: 30%;
 	
-	width: 24%;
-
+	width: 40%;
 }
 
 #overlay .overlay-close{
@@ -552,4 +570,32 @@ fieldset{
 #overlay .overlay-close:hover{
 	text-decoration: underline;
 	cursor: pointer;
+}
+
+
+
+.loading{
+	background-image: url('../images/ui_loading.gif');
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
+.center{
+	display: block;
+	text-align: center;
+}
+
+.floatright{
+	float: right;
+}
+
+
+
+
+
+/*
+ * jscolor colorpicker
+ */
+div.jscolor{
+	border: 1px solid black;
 }

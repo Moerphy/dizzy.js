@@ -21,9 +21,10 @@
       },
          
       initialize : function(dizzy,options){
+         $(dizzy.svg.root()).removeClass('editing');
       },
       finalize : function(dizzy, options){
- 
+         $(dizzy.svg.root()).addClass('editing');
       } 
    };
    

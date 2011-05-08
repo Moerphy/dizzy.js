@@ -9,12 +9,12 @@
       <!--  contains jquery, jquery mousewheel and jquery svg -->
       <script type="text/javascript" src="./js/jquery/jquery.full.min.js"></script>
       <script type="text/javascript" src="./js/dizzy.full.js"></script>
-
+      <script type="text/javascript" src="./js/polyfill.input.color.js"></script>
 
    </head>
     <body>
       <!--  Canvas-->
-      <div id="dizzy"></div>
+      <div id="dizzy" class="loading"></div>
       
       <!-- Zebra -->
       <div id="zebra">
@@ -29,10 +29,6 @@
             <div class="zebra-toolbar-row">
                <div class="toolbutton" id="zebra-toolbar-up" title="Raise group one level"><img src="./images/zebra_tool_up.png" alt="arrow up icon" /></div>
                <div class="toolbutton" id="zebra-toolbar-down" title="Lower group one level"><img src="./images/zebra_tool_down.png" alt="arrow down icon" /></div>
-               <div class="toolbutton inactive" id="zebra-toolbar-group" title="Add another group"><img src="./images/zebra_tool_group.png" alt="group icon" /></div>
-               <div class="toolbutton inactive" id="zebra-toolbar-ungroup" title="Split into single groups for every item"><img src="./images/zebra_tool_ungroup.png" alt="ungroup icon" /></div>
-               <div class="toolbutton inactive" id="zebra-toolbar-color" title="Choose colors for this group"><img src="./images/zebra_tool_color.png" alt="color icon" /></div>
-               
             </div>
          </div>
       </div>
@@ -48,16 +44,24 @@
             <div class="toolbutton" id="tool-path" title="Edit presentation path"><img src="./images/tool_path.png" alt="edit path mode" /></div>
       
             <div class="toolbutton" id="tool-line" title="Draw lines"><img src="./images/tool_line.png" alt="draw line mode" /></div>
-            <div class="toolbutton inactive" id="tool-arrow" title="Draw arrows" ><img src="./images/tool_arrow.png" alt="draw arrow mode" /></div>
+            <!-- div class="toolbutton inactive" id="tool-arrow" title="not implemented yet" ><img src="./images/tool_arrow.png" alt="draw arrow mode" /></div -->
             
-            <div class="toolbutton inactive" id="tool-bracket" title="Draw brackets" >[ ]</div>
-            <div class="toolbutton" id="tool-image" title="Insert an image"><img src="./images/tool_image_add.png" alt="insert image button" /></div>
-            
+            <div class="toolbutton" id="tool-rect" title="Draw frames"><img src="./images/tool_rect.png" alt="draw frame mode" /></div>
             <div class="toolbutton" id="tool-circle" title="Draw ellipses"><img src="./images/tool_circle.png" alt="draw ellipse mode" /></div>
-            <div class="toolbutton inactive" id="tool-formula" title="Insert a formula"><img src="./images/tool_formula.png" alt="insert formula button" /></div>
+            
+            <div class="toolbutton" id="tool-image" title="Insert an image"><img src="./images/tool_image_add.png" alt="insert image button" /></div>
+            <!-- div class="toolbutton inactive" id="tool-media" title="not implemented yet"><img src="./images/tool_formula.png" alt="insert media button" /></div -->
             
             <div class="toolbutton hidden" id="tool-previous" title="Previous group"><img src="./images/tool_previous.png" alt="Transition to previous group" /></div>
             <div class="toolbutton hidden" id="tool-next" title="Next group"><img src="./images/tool_next.png" alt="Transition to next group" /></div>
+            
+            
+            
+            <div id="tool-color" class="toolbutton fullwidth" title="Choose fill and stroke colors">
+               <img src="./images/zebra_tool_color.png" alt="color icon" class="hidden" />
+               <input type="color" value="#000000" id="tool-input-color-fill" title="Fill color" />
+               <input type="color" value="#FFFFFF" id="tool-input-color-stroke" title="Stroke color" />
+            </div>
             
             <div id="present-toggle-button" class="toolbutton fullwidth" title="Start presentation" >
                <img src="./images/menu_present.png" alt="start presentation image" /> <span>Present</span>
@@ -153,10 +157,29 @@
       <div id="overlay" class="hidden" >
          <div id="overlay-dialog-input" class="overlay-dialog hidden">
             <div class="overlay-close">x</div>
-            Paste an image URL in the textbox below.<br /><br />
-            <label for="overlay-dialog-input-field">Image URL: </label><br />
-            <input type="text" value="http://placekitten.com/300/200"  id="overlay-dialog-input-field" /><input type="button" value="Insert image" />
+            <form>
+            <fieldset>
+               <legend>Link image</legend>
+               To add a remote image to your presentation just enter the image URL in the text field below.<br /><br />
+               <label for="image-dialog-input-field">Image URL: </label>
+               <input type="text" placeholder="http://placekitten.com/300/200"  id="overlay-dialog-input-field" />
+            </fieldset>
+            
+            <strong class="center">OR</strong>
+            
+            
+            <fieldset>
+               <legend>Embed</legend>
+               To embed an image simply choose a file from your local file system.<br /><br />
+               <label for="menu-open-input">File:</label>
+               <input type="file" id="image-dialog-file-field" />
+            </fieldset>
+            <span class="floatright">
+               <a href="#" class="overlay-cancel">Cancel</a> <input type="button" value="Insert image"/>
+            </span>
+            </form>
          </div> 
+
       </div>
       
       

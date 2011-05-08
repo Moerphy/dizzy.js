@@ -1,4 +1,4 @@
-$(function(){
+$(function(){   
 	var containerSelector = '#dizzy';
 	$(containerSelector)
 		.height($(document).height())
@@ -6,8 +6,10 @@ $(function(){
 		.focus();
 	
 	var dizz = new Dizzy(containerSelector , {zoomable: true, pannable: true, transformTime: 1000, zoomFactor: 2} );
-		
-	loadPresentation('./svg/blank.svg');
+	
+
+   loadPresentation('./svg/blank.svg');
+
 	
 	function loadPresentation(uri){
 		
@@ -17,11 +19,13 @@ $(function(){
 				dizz.show(0);
             // load default css in edit-box
             $('#menu-style-css-input').val( $('#dizzy-internal-style').text() );
+            $(this.container).removeClass('loading');
 			} );
 	}
+   
+   
+   
 	var toolbar = $('#toolbar');
-	
-      
    /*
     * Toolbar
     */
@@ -40,6 +44,10 @@ $(function(){
 	} );
    $('#tool-circle').click( function(e){ 
 		dizz.switchPlugin('editor.circles'); 
+		selectButton(this);
+	} );
+   $('#tool-rect').click( function(e){ 
+		dizz.switchPlugin('editor.rect'); 
 		selectButton(this);
 	} );
    $('#tool-line').click( function(e){ 
@@ -67,7 +75,7 @@ $(function(){
          mouseMovedTimeout = setTimeout( checkMouseMove, mouseInterval );
          $(document).bind('mousemove', function(){ mouseMoved = true; } );
          $(document).bind('keydown.presentation.navigation', function(ev){ presentationKeypress(ev); } );
-         $('.toolbutton').not('.fullwidth').toggleClass('hidden');
+         $('.toolbutton').not(':first-child, :last-child').toggleClass('hidden');
          $('#present-toggle-button').children('span').text('End'); 
       },
       function(){ 
@@ -75,8 +83,9 @@ $(function(){
          clearTimeout( mouseMovedTimeout );
          selectButton($('#tool-default'));
          $(document).unbind('keydown.presentation.navigation');
-         $('.toolbutton').not('.fullwidth').toggleClass('hidden');
+         $('.toolbutton').not(':first-child, :last-child').toggleClass('hidden');
          $('#present-toggle-button').children('span').text('Present');
+         $('#toolbar').removeClass('invisible');
       }
    ); 
 
@@ -104,23 +113,69 @@ $(function(){
       var overlay = $('#overlay, #overlay-dialog-input');
       overlay.removeClass('hidden');
       
-      var insertButton = overlay.children('input[type="button"]');
+      var insertButton = overlay.find('input[type="button"]');
       insertButton.bind('click', function(){ 
          $(this).unbind('click'); 
-         
          dizz.switchPlugin('editor');
          
-         $(document).trigger( 'addImage', [overlay.children('#overlay-dialog-input-field').val()] ); 
+         
+         
+         // local image selected?
+         var fileField = $('#image-dialog-file-field');
+         var files = fileField[0].files;
+         console.trace();
+         if( (files.length > 0) && (files[0].type.indexOf('image/') >= 0) ){
+            var reader = new FileReader();
+            var openFile = files[0];
+            reader.onload = function(e){ 
+               $(document).trigger( 'addImage', [e.target.result] ); 
+            };
+            reader.readAsDataURL(openFile);
+            fileField.parents('form')[0].reset();
+         }else{
+            // link image url
+            var imageData = overlay.children('#image-dialog-input-field').val();
+            if( imageData !== undefined ){
+               $(document).trigger( 'addImage', [imageData] ); 
+            }
+         }
+         
+         
          
          overlay.addClass('hidden');
          dizz.restorePluginState();
       });
+
+      /*
+      var file = evt.target.files; // FileList object
+      if ( file.length >= 1 && file[0].type.indexOf('image/') > 0 ) {
+         var reader = new FileReader();
+         var openFile = file[0];
+         reader.onload = function(e){ 
+            $(document).trigger( 'addImage', [e.target.result] ); 
+         };
+         reader.readAsDataURI(openFile);
+      }
+      */
       
-     // dizz.addImage();
+      
    });
-      
-      
-      
+   
+   
+   $('#tool-input-color-fill, #tool-input-color-stroke')
+      // stops the bubbling of the keydown/keypress events to the document, where the editor would catch it.
+      .bind('keydown keypress', function(e){ e.preventDefault(); return true; } )
+      .bind('input', function(e){
+         var fillColor = $('#tool-input-color-fill').val();
+         var strokeColor = $('#tool-input-color-stroke').val();
+         
+         $(document).trigger({type : 'dizzy.color.changed', stroke : strokeColor, fill : fillColor } );
+         $('.zebraSelected').attr({
+            stroke : strokeColor,
+            fill : fillColor
+         });
+      } )
+      .bind('click', function(e){ $(this).blur(); });
    /*
     * Menu
     */
@@ -132,6 +187,7 @@ $(function(){
       
       if( isUndefined(backupActivePlugin) ){
          backupActivePlugin = dizz.activePlugin;
+         dizz.switchPlugin('presentation');
       }else{
          dizz.switchPlugin(backupActivePlugin);
          backupActivePlugin = undefined;
@@ -140,9 +196,7 @@ $(function(){
       menuRightDefaultText = menuRightDefaultText||$('#menu-right').text();
       $('#menu-right').html(menuRightDefaultText);
    }
-   $('#menu-button').bind('click', function() {
-      toggleMenu();
-   });
+   $('#menu-button').bind( 'click', toggleMenu );
        
 	/*
 	 * Menu-items
@@ -177,7 +231,7 @@ $(function(){
    });
    
    $('#menu-save').bind('click', function(evt){
-      dizz.switchPlugin(presentation);
+      dizz.switchPlugin('presentation');
       var svgProlog = '<?xml version="1.0" encoding="UTF-8"?>';
 
       var svgText = dizz.serialize();
@@ -187,7 +241,7 @@ $(function(){
    
    // style -> css
    var cssInput = $('#menu-style-css-input');
-   cssInput.bind('blur', function(evt){
+   cssInput.bind('input blur', function(evt){
       $('#dizzy-internal-style').empty();
       $('#dizzy-internal-style').append( cssInput.val() );
    });
@@ -200,10 +254,11 @@ $(function(){
       $(this).toggleClass('mirrored');
    });
    
+   
    /*
     * Overlay
     */
-   $('.overlay-close').bind('click', function(){
+   $('.overlay-close, .overlay-cancel').bind('click', function(){
       $('#overlay').addClass('hidden');
       dizz.switchPlugin('editor');
    });

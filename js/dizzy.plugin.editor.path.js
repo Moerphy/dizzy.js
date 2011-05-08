@@ -1,9 +1,11 @@
 /*
  * dizzy.js 
+ *
  * http://dizzy.metafnord.org
- * 
- * Version: 0.5.0
- * Date: 04/14/2011
+ * @author Murphy (murphy.metafnord.org)
+ *
+ * @version: 0.5.0
+ * @updated: 04/14/2011
  * 
  * licensed under the terms of the MIT License
  * http://www.opensource.org/licenses/mit-license.html
@@ -37,6 +39,7 @@
          var groupNumberParser = /group_(\d+)/;
          $( 'g.group', that.dizzy.svg.root() ).each( function(index){ 
             var node = $(this);
+            node.data('pathCount', '0');
             var classes = $(this.getAttribute('class').split(' '));
             classes.each( function(index){
                var matches = groupNumberParser.exec(this);
@@ -68,8 +71,8 @@
 			if( typeof pathCount === 'undefined' ){
 				pathCount = 0;
 			}
-			var pathX = $(document).width()/2.4 + (31*(pathCount%5)) ;
-			var pathY = $(document).height()/2.4+ 31*Math.floor(pathCount/5);
+			var pathX = $(document).width()/2.0 + (31*(pathCount%5)) ;
+			var pathY = $(document).height()/2.0+ 31*Math.floor(pathCount/5);
 			
 			group.addClass('group_'+num);
 			
@@ -187,8 +190,8 @@
 			group.data('pathCount', pathCount-1);
 			group.removeClass('group_'+num);
 			
-			var pathX = $(document).width()/2.4;
-			var pathY = $(document).height()/2.4;
+			var pathX = $(document).width()/2.0;
+			var pathY = $(document).height()/2.0;
 			
 			group.children('g.pathNumberIndicator').each(
 				function(index){

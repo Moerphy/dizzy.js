@@ -1,9 +1,11 @@
 /*
  * dizzy.js 
+ *
  * http://dizzy.metafnord.org
- * 
- * Version: 0.5.0
- * Date: 04/14/2011
+ * @author Murphy (murphy.metafnord.org)
+ *
+ * @version: 0.5.0
+ * @updated: 04/14/2011
  * 
  * licensed under the terms of the MIT License
  * http://www.opensource.org/licenses/mit-license.html
@@ -249,7 +251,16 @@
 				svgPoint = svgPoint.matrixTransform(canvasMatrix.inverse());
 			}
 			return svgPoint;   
-      }
+      },
+      
+      serialize : function(){
+		 	// Fixes Chrome. I really have no clue why chrome leaves that out otherwise...
+			$(this.svg.root()).attr('xmlns','http://www.w3.org/2000/svg');
+			// clean up, remove all empty groups
+			$('.group:empty', this.svg.root()).remove();
+			
+			return this.svg.toSVG();	
+		}
    });
     
    return Dizzy;

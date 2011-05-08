@@ -65,6 +65,7 @@
 			this.panningInfo.x = svgPoint.x;
 			this.panningInfo.y = svgPoint.y;
 	
+         
 			return false;
       },
       

@@ -29,13 +29,13 @@
          var $document = $(document);
          // rewrite viewbox. Not the nicest thing to do, but makes so many things so much easier.
          that.dizzy.svg.configure({viewBox: '0 0 '+$document.width()+' '+$document.height() }, true);	
-      
+ 
          $('g.group > *', dizzy.svg.root() ).live('click.dizzy.editor.default', function(event){ return that.showZebra(event); } );
          var zebraHide = (function(event){ that.hideZebra(event); });
          $(document).bind('transformed', zebraHide );  			
          $(document).bind('hideZebra', zebraHide );  		
       },
-      
+
       
       showZebra : function(ev){
          var that = this;
@@ -47,15 +47,12 @@
 			$( '#zebra #zebra-scale').mousedown( function(ev){ return that.zebraScaleStart(ev); } );
 			$( '#zebra #zebra-translate').mousedown( function(ev){ return that.zebraTranslateStart(ev); } );
 			
+         
 			var group = $( ev.currentTarget.parentNode, svgRoot );
-			
-			// zoom in on element, disabled for now.
-			 var groupMatrix = that.dizzy.getTransformationMatrix(group);
-			// that.transformCanvas(groupMatrix.inverse());
-			
+         
 			this.selectedGroup = group;
 			this.selectedTarget = $(ev.currentTarget, svgRoot);
-			
+         
          this.selectedTarget.addClass('zebraSelected');
          
 			// mark group

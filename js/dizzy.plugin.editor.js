@@ -1,9 +1,11 @@
 /*
  * dizzy.js 
+ *
  * http://dizzy.metafnord.org
- * 
- * Version: 0.5.0
- * Date: 04/14/2011
+ * @author Murphy (murphy.metafnord.org)
+ *
+ * @version: 0.5.0
+ * @updated: 04/14/2011
  * 
  * licensed under the terms of the MIT License
  * http://www.opensource.org/licenses/mit-license.html
@@ -36,5 +38,4 @@
    };
    
    D.registerPlugin(editorPlugin);
-    
  })(window, document, Dizzy);

@@ -1,10 +1,12 @@
 /*
  * dizzy.js 
+ *
  * http://dizzy.metafnord.org
- * 
- * Version: 0.5.0
- * Date: 04/14/2011
- * 
+ * @author Murphy (murphy.metafnord.org)
+ *
+ * @version: 0.5.0
+ * @updated: 04/14/2011
+ *
  * licensed under the terms of the MIT License
  * http://www.opensource.org/licenses/mit-license.html
  */
@@ -14,12 +16,13 @@
    var textPlugin ={
       name : 'editor.text',
       depends : [],
-         
+      options : {},
+      
       initialize : function(dizzy){
          var that = this;
          that.dizzy = dizzy;
          
-         // not so nice to bind it to document.. but otherwise keypresses won't fire somehow o_O
+         // not so nice to bind it to document.. but since it's not a form element or anything..
          $(document).bind('keypress.dizzy.editor', function(event){ return that.keyPressed(event); });
          $(document).bind('keydown.dizzy.editor',  function(event){ return that.keyDown(event); });
       },
@@ -36,11 +39,17 @@
 				
 				var group = $(that.dizzy.svg.other($('#canvas'), 'g'));
 				group.attr('class','group');
+            
 				var matrix = that.dizzy.getTransformationMatrix(that.dizzy.canvas).inverse();
 				group.attr('transform', that.dizzy.transformationMatrixToString(matrix));
 				var text = $(that.dizzy.svg.other(group, 'text'));
 				var textSpan = $(that.dizzy.svg.other(node, 'tspan'));
-				text.attr('y', '50%');
+            text.attr({
+               y : '50%',
+               stroke : this.dizzy.color.stroke,
+               fill : this.dizzy.color.fill
+            });
+				//text.attr('y', '50%');
 				textSpan.attr('x', '50%');
 				
 				text.append(textSpan);
@@ -74,7 +83,7 @@
 					//that.hideZebra(); // does make some problems
                return false;
 				}else if(ev.which === 46 || (ev.which === 0 && ev.keyCode === 46) ){ // delete key -> remove group
-					this.removeNode(node);
+					this.removeNode(node.parents('g.group'));
                
                $(document).trigger('hideZebra');
                

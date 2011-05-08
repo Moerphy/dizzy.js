@@ -1,9 +1,11 @@
 /*
  * dizzy.js 
+ *
  * http://dizzy.metafnord.org
- * 
- * Version: 0.5.0
- * Date: 04/14/2011
+ * @author Murphy (murphy.metafnord.org)
+ *
+ * @version: 0.5.0
+ * @updated: 04/14/2011
  * 
  * licensed under the terms of the MIT License
  * http://www.opensource.org/licenses/mit-license.html
@@ -33,10 +35,11 @@
          var group = $(this.dizzy.svg.other($('#canvas'), 'g'));
          group.attr('class','group');
          var matrix = this.dizzy.getTransformationMatrix(this.dizzy.canvas).inverse();
+
          group.attr( 'transform', this.dizzy.transformationMatrixToString(matrix) );
          
 
-         this.line = this.dizzy.svg.line(group, ev.pageX, ev.pageY, ev.pageX, ev.pageY, {stroke: 'black', fill : 'black', strokeWidth : 5});
+         this.line = this.dizzy.svg.line(group, ev.pageX, ev.pageY, ev.pageX, ev.pageY, {stroke: this.dizzy.color.stroke, fill : this.dizzy.color.fill, strokeWidth : 5});
          return false;
       },
       

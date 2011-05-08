@@ -103,3 +103,8 @@ function mergeObjects(obj1,obj2){
 
     return obj;
 }
+
+function getEventTarget(e) {
+  e = e || window.event;
+  return e.target || e.srcElement;
+}
