@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="dizzy" default="main" basedir=".">
+    
+    <!-- properties -->
+    <property name="js.build" value="./make/app.build.js" />
+    <property name="r.js" value="./make/r.js" />
+    <property name="closure.jar" value="./make/bin/closure.jar" />
+    <property name="rhino.jar" value="./make/bin/rhino.jar" />
+    
+    <!-- custom tasks -->
+    
+    
+    <!-- targets -->
+    <target name="-optimize" description="Combine and minify files.">
+        <java classname="org.mozilla.javascript.tools.shell.Main">
+            <classpath>
+                <pathelement location="${rhino.jar}" />
+                <pathelement location="${closure.jar}" />
+            </classpath>
+            <arg value="${r.js}"/>
+            <arg value="-o"/>
+            <arg value="${requirejs.optimizer.settings}"/>
+        </java>
+        <echo message="optimized ${requirejs.optimizer.settings}" />
+    </target>
+    
+    <target name="optimizeJS">
+        <echo message="Combining and minifying JS files." />
+        <antcall target="-optimize">
+            <param name="requirejs.optimizer.settings" value="${js.build}" />
+        </antcall>  
+    </target>
+    
+    <target name="optimizeCSS">
+        <echo message="Combining and compressing CSS files." />
+        <antcall target="-optimize">
+            <param name="requirejs.optimizer.settings" value="${css.build}" />
+        </antcall>  
+    </target>
+    
+    <target name="main" depends="optimizeJS" />
+</project>

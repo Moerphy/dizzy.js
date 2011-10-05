@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+         "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     viewBox="0 0 2000 1500"
+     preserveAspectRatio="xMidYMid"
+     xml:space="preserve">
+     
+   <style type="text/css" id="dizzy-internal-style">
+      <![CDATA[
+text tspan{
+   font-size: 200px;
+}
+      ]]>
+   </style>
+   <g  id="canvas">
+      
+      <g class="group group_1">
+         <text x="700" y="750">
+            <tspan>Default text</tspan>
+         </text>
+      </g>
+      
+   </g>
+
+
+
+</svg>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     viewBox="0 0 100 100">
+	 <g translate="0">
+		<path d="M10,50 a40,40 0 1,0 0,-1 Z"
+    		style="fill:none; stroke:grey; stroke-width:20px; stroke-dasharray:15px, 5px;" />
+	 </g>
+	</svg>

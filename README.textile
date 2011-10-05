@@ -1,46 +1,16 @@
 h1. dizzy.js
 
-dizzy.js enables you to create non-linear presentations similiar to 
-"Prezi":http://prezi.com, without using Flash or some other proprietary technology.
-
-For a quick start, try using presenter.html, appending the path of one of the examples as the URL hash.
-(Example: <file:///home/erlehmann/src/dizzy.js/presenter.html#examples/upside-down-zoom.svg>)
-
-h2. Usage
-
-h3. SVG
-
-Dizzy makes extensive use of SVG groups. First, “slides” are groups with the class “group” and one or more class “group_n”, where n is a positive integer signifying the position of the “slide” in the presentation. Second, all “slides” have to be in one SVG group with the id “canvas”.
-
-To impress the audience properly, SVG transformations should be applied to the “slide” groups.
-
-h3. Javascript
-
-Just create a new Dizzy object and pass a selector for a dom node thats used as container.
-var dizz = new Dizzy('#dizzy');
-You can also pass options to the Dizzy() function. See the wiki for a description of all options.
-var dizz = new Dizzy('#dizzy', {pannable: true, transformTime: 1000});
-Afterwards you can load a new SVG-file with:
-dizz.load('./file.svg');
-optional pass a callback:
-dizz.load('./file.svg', 
-	function(){ // gets executed once file.svg has been loaded.
-		dizz.show(0); // display canvas untransformed.
-	} );
-
-To navigate through the presentation just call the methods next(), previous() or show(n) on the dizzy object.
-
+Dizzy enables you to create non-linear presentations on a single canvas, using SVG and Javascript.
+There is an "online editor":http://dizzy.metafnord.org for presentation files available, although you could also host your own with the code provided here (no serverside code needed). (:
 
 h2. Browser support
 
 See "Browser support":http://github.com/Moerphy/dizzy.js/wiki/Browser-support in the wiki
 
-h2. To do
+h2. Contribute
 
-- Bugfixing
-- -Zooming and panning-
-- moar jQuery
-- More tools in editor (draw lines, circles, frames..)
+If you want to develop for Dizzy check out the dev branch (contains everything including tools, so it may take some time). There will be some information on how to write new modules on the Wiki shortly. If you have any questions regarding development, you can message me on github or, even better, open an issue on this repository.
+
 
 h2. License
 

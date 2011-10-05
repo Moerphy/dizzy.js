@@ -1,0 +1,15 @@
+/* the humans responsible & colophon */
+/* humanstxt.org */
+
+
+/* TEAM */
+  Author: Murphy
+  Site: http://murphy.metafnord.org
+  Twitter: @MrMoerphy
+  Location: Germany
+  
+
+/* SITE */
+  Standards: HTML5, CSS3, SVG
+  Components: jQuery, jQuery.SVG, parts of HTML5 Boilerplate
+  Software: Geany, Ant, GIMP
