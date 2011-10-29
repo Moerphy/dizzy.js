@@ -15,7 +15,7 @@
     <body>
       <!--  Canvas-->
       <div id="dizzy" class="loading"></div>
-      
+
       <!-- Zebra -->
       <div id="zebra">
          <div id="zebra-rotate">
@@ -23,7 +23,7 @@
                <div id="zebra-translate"></div>
             </div>
          </div>
-         
+
          <div id="zebra-expand-button">&rsaquo;</div>
          <div id="zebra-toolbar" class="hidden">
             <div class="zebra-toolbar-row">
@@ -32,53 +32,53 @@
             </div>
          </div>
       </div>
-      
+
       <div id="tools-main">
          <!-- Tools -->
          <div id="toolbar">
             <div id="menu-button" class="toolbutton fullwidth">
                Menu &#9656;
             </div>
-            
+
             <div class="toolbutton pressed" id="tool-default" title="Default controls"><img src="./images/tool_default.png" alt="default mode" /></div>
             <div class="toolbutton" id="tool-path" title="Edit presentation path"><img src="./images/tool_path.png" alt="edit path mode" /></div>
-      
+
             <div class="toolbutton" id="tool-line" title="Draw lines"><img src="./images/tool_line.png" alt="draw line mode" /></div>
             <!-- div class="toolbutton inactive" id="tool-arrow" title="not implemented yet" ><img src="./images/tool_arrow.png" alt="draw arrow mode" /></div -->
-            
+
             <div class="toolbutton" id="tool-rect" title="Draw frames"><img src="./images/tool_rect.png" alt="draw frame mode" /></div>
             <div class="toolbutton" id="tool-circle" title="Draw ellipses"><img src="./images/tool_circle.png" alt="draw ellipse mode" /></div>
-            
+
             <div class="toolbutton" id="tool-image" title="Insert an image"><img src="./images/tool_image_add.png" alt="insert image button" /></div>
             <!-- div class="toolbutton inactive" id="tool-media" title="not implemented yet"><img src="./images/tool_formula.png" alt="insert media button" /></div -->
-            
+
             <div class="toolbutton hidden" id="tool-previous" title="Previous group"><img src="./images/tool_previous.png" alt="Transition to previous group" /></div>
             <div class="toolbutton hidden" id="tool-next" title="Next group"><img src="./images/tool_next.png" alt="Transition to next group" /></div>
-            
-            
-            
+
+
+
             <div id="tool-color" class="toolbutton fullwidth" title="Choose fill and stroke colors">
                <img src="./images/zebra_tool_color.png" alt="color icon" class="hidden" />
                <input type="color" value="#000000" id="tool-input-color-fill" title="Fill color" />
                <input type="color" value="#FFFFFF" id="tool-input-color-stroke" title="Stroke color" />
             </div>
-            
+
             <div id="present-toggle-button" class="toolbutton fullwidth" title="Start presentation" >
                <img src="./images/menu_present.png" alt="start presentation image" /> <span>Present</span>
             </div>
          </div>
-         
+
          <!-- Expendable menu -->
          <div id="menu" class="hidden">
             <div id="menu-left">
-            
+
                <ul>
                   <li><h2>File</h2>
                      <ul>
-                        <li title="Open saved dizzy presentation" 
+                        <li title="Open saved dizzy presentation"
                               class="selected" id="menu-open"
                               data-description="Open a saved dizzy presentation. If you choose a new file the current content of the canvas will be erased!">
-                           <img src="./images/menu_open.png" alt="Open file" /> Open 
+                           <img src="./images/menu_open.png" alt="Open file" /> Open
                            <div id="menu-open-extended" class="hidden">
                               <hr />
                               <form>
@@ -86,7 +86,7 @@
                                     <label for="menu-open-input">File:</label>
                                     <input type="file" id="menu-open-input" />
                                  </fieldset>
-                              </form>  
+                              </form>
                            </div>
                         </li>
                         <li title="Save dizzy presentation" id="menu-save" data-description="Save Dizzy presentation. The SVG file will be opened in a new window. You can then save it like a normal webpage ('File -> Save Page As' in most browsers) "><img src="./images/menu_save.png" alt="Save file" /> Save</li>
@@ -119,7 +119,7 @@
                      <ul>
                         <li title="Report bugs found."><img src="./images/menu_bugs.png" alt="report bugs" /> Report bugs
                            <div id="menu-bugs-extended" class="hidden"><hr />
-                           Please report occured bugs through the <a href="https://github.com/Moerphy/dizzy.js/issues">issue tracker</a>. 
+                           Please report occured bugs through the <a href="https://github.com/Moerphy/dizzy.js/issues">issue tracker</a>.
                            If you include information about your browser and what you were doing when the bug occured it usually can be fixed faster.
                            </div>
                         </li>
@@ -128,32 +128,32 @@
                               Dizzy is a web based presentation application, heavily inspired by <a href="http://prezi.com">Prezi</a>,
                               that uses a single canvas instead of multiple slides for a presentation.<br />
                               <br />
-                              Unlike Prezi, presentations with Dizzy are made entirely without Flash, using SVG and Javascript only. 
+                              Unlike Prezi, presentations with Dizzy are made entirely without Flash, using SVG and Javascript only.
                               Also everything is open source under the MIT license (code available on <a href="https://github.com/Moerphy/dizzy.js">Github</a>).<br />
                               <br />
 
-                              <b>Please keep in mind that this project is still in it&apos;s early beta, 
+                              <b>Please keep in mind that this project is still in it&apos;s early beta,
                               so there are many open bugs and quirks and a lot of features yet to be implemented.</b>
                               <br />
 
                               The awesome icons used here are from the fugue icon set by <a href="http://p.yusukekamiyamane.com/">Yusuke Kamiyamane</a><br />
                               <br />
-                              Author: <a href="http://murphy.metafnord.org">Murphy</a> 
+                              Author: <a href="http://murphy.metafnord.org">Murphy</a>
                               <a href="http://www.twitter.com/MrMoerphy"><img src="http://twitter-badges.s3.amazonaws.com/t_small-b.png" alt="Follow me on Twitter" style="border: 0; vertical-align: text-bottom;"/></a>
                            </div>
                         </li>
                      </ul>
                   </li>
                </ul>
-            
+
             </div>
-            <div id="menu-right">Put your mouse over a menu-item to get a description here.</div>          
+            <div id="menu-right">Put your mouse over a menu-item to get a description here.</div>
          </div>
       </div>
-      
-      
-      
-      
+
+
+
+
       <div id="overlay" class="hidden" >
          <div id="overlay-dialog-input" class="overlay-dialog hidden">
             <div class="overlay-close">x</div>
@@ -164,10 +164,10 @@
                <label for="image-dialog-input-field">Image URL: </label>
                <input type="text" placeholder="http://placekitten.com/300/200"  id="overlay-dialog-input-field" />
             </fieldset>
-            
+
             <strong class="center">OR</strong>
-            
-            
+
+
             <fieldset>
                <legend>Embed</legend>
                To embed an image simply choose a file from your local file system.<br /><br />
@@ -178,10 +178,10 @@
                <a href="#" class="overlay-cancel">Cancel</a> <input type="button" value="Insert image"/>
             </span>
             </form>
-         </div> 
+         </div>
 
       </div>
-      
-      
+
+
    </body>
 </html>

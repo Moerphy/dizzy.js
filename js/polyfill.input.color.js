@@ -1,6 +1,6 @@
 $( function(){
    (function(window, document, undefined){
-         
+
 
       /*
        * jscolorXXS, JavaScript Color Picker
@@ -29,7 +29,7 @@ $( function(){
          // ..... etc.
 
          init : function() {
-            
+
             var cName;
             var objs = document.querySelectorAll('input[type=color]');
             for (var n=0; n<objs.length; n++){
@@ -76,12 +76,12 @@ $( function(){
             '.arrow{background-image:url('+(IE?'arrow.gif':'data:image/gif;base64,'+arrow+'')+')}'+
             '.tw{background:url('+(IE?'twb.png':'data:image/png;base64,'+twb+'')+')}'+
             '.tb{background:url('+(IE?'twb.png':'data:image/png;base64,'+twb+'')+') 0px -101px}';
-            
+
             newCSS.setAttribute('type','text/css');
             if (newCSS.styleSheet) newCSS.styleSheet.cssText = '<!--\n'+CSS+'\n-->';
             else newCSS.appendChild(document.createTextNode('<!--\n'+CSS+'\n-->'));
             document.getElementsByTagName('head')[0].appendChild(newCSS);
-            
+
             div.className = 'jscolor';
             div.innerHTML = '<div class="left"><div class="layer t'+(cpMS?'b':'w')+'"></div><div class="cursor cross"></div><div class="mousepad"></div></div>'+
             '<div class="right t'+(cpMS?'w':'b')+'"><div class="cursor arrow"></div><div class="mousepad"></div></div>';
@@ -89,10 +89,10 @@ $( function(){
             for (var n=0; n<divColl.length; n++) jscolor[['jcL','layL','curL','padL','jcR','curR','padR'][n]]=divColl[n];
             div.style.position = 'absolute'; div.style.display = 'none';
             jscolor.jscolor = div;
-            
+
             return div;
          },
-            
+
          addEvents : function() {
             jscolor.padL.onmousedown = jscolor.padR.onmousedown = function(e){
                var  e = e ? e : window.event, obj = e.target || e.srcElement;
@@ -107,8 +107,8 @@ $( function(){
                return false;
             });
          },
-         
-         
+
+
          doDrag : function(e,mouseNow,init) {
             if (jscolor.curObj) jscolor.obj = jscolor.curObj;
             var  e = e ? e : window.event,
@@ -120,7 +120,7 @@ $( function(){
             mouseNow[0] = mouseNow[0] < 0 ? 0 : mouseNow[0] > 180 ? 180 : mouseNow[0];
             var Hc = mouseNow[0]/180*255, Sc = Vc = 255-(mouseNow[1]/100*255), // c = coordinate whise
                   Sr = jscolor.color.S/100*255, Vr = jscolor.color.V/100*255;    // r = real
-            
+
             if (jscolor.padL.xyNow || init == jscolor.padL) { // left picker
                curL.left = mouseNow[0]-7+'px';
                curL.top = mouseNow[1]-7+'px';
@@ -130,24 +130,24 @@ $( function(){
                curR.top = mouseNow[1]-5+'px';
                jscolor.color.putHSV([jscolor.color.H, cpMS?jscolor.color.S:100-mouseNow[1], cpMS?100-mouseNow[1]:jscolor.color.V]);
             }
-            
+
             if (init) return false;
             jscolor.obj.style.backgroundColor = 'rgb('+[jscolor.color.R,jscolor.color.G,jscolor.color.B]+')';
             //jscolor.obj.style.color = jscolor.getBrightness([jscolor.color.R,jscolor.color.G,jscolor.color.B]) > 128 ? '#000' : '#FFF';
             val = jscolor.RGB2HEX([jscolor.color.R,jscolor.color.G,jscolor.color.B]);
             jscolor.obj.value = (jscolor.hash ? '#':'') + (jscolor.caps ? val : val.toLowerCase());
-            
-            
+
+
             // throw the new "input" event that's been introduced html5
             var evt = document.createEvent('HTMLEvents');
             evt.initEvent('input', true, true ); // event type,bubbling,cancelable
             jscolor.obj.dispatchEvent(evt);
-            
-            
-            
+
+
+
             return false;
          },
-         
+
          color : {
             H:0,S:100,V:100,R:0,G:0,B:0,
             putRGB : function (rgb) {this.R=rgb[0]; this.G=rgb[1]; this.B=rgb[2]},
@@ -157,13 +157,13 @@ $( function(){
                this.R=rgb[0]; this.G=rgb[1]; this.B=rgb[2]
             }
          },
-         
+
          togglePicker : function(e) {
             var  e = e ? e : window.event, obj = e.target || e.srcElement,
             jcs = jscolor.jscolor.style,
             HSVxy = jscolor.RGB2HSV(jscolor.HEX2RGB(obj.value)),
             cpMS = (jscolor.pickerMode == 'HVS');
-            
+
             if (jcs.display != 'none' && jscolor.curObj == obj){
                jcs.display = 'none';
             } else {
@@ -176,7 +176,7 @@ $( function(){
             jscolor.curObj = obj;
             $(jscolor.jscolor).trigger('change');
          },
-         
+
          getBrightness : function(rgb) {return Math.sqrt(rgb[0]*rgb[0]*.241+rgb[1]*rgb[1]*.691+rgb[2]*rgb[2]*.068)},
 
          RGB2HEX : function (rgb) {
@@ -184,15 +184,15 @@ $( function(){
                       (rgb[1]<16?'0':'')+rgb[1].toString(16)+
                       (rgb[2]<16?'0':'')+rgb[2].toString(16)).toUpperCase();
          },
-         
+
          HEX2RGB : function (hex) {
             hex = hex.replace('#','');
             return [parseInt(hex.substr(0,2),16), parseInt(hex.substr(2,2),16), parseInt(hex.substr(4,2),16)];
          },
-         
+
          HSV2RGB : function(x,y,z) {
             var r=g=b=c=0,d=(100-z/255*100)/100,i=y/255,j=y*(255-z)/255;cPHue=z;
-            
+
             if (x<42.5){r=y;g=x*6*i;g+=(y-g)*d;b=j;}
             else if (x>=42.5&&x< 85){c=42.5;r=(255-(x-c)*6)*i;r+=(y-r)*d;g=y;b=j;}
             else if (x>=85&&x<127.5){c=85;r=j;g=y;b=(x-c)*6*i;b+=(y-b)*d;}
@@ -201,7 +201,7 @@ $( function(){
             else if (x>=212.5){c=212.5;r=y;g=j;b=(255-(x-c)*6)*i;b+=(y-b)*d;}
             return [Math.round(r),Math.round(g),Math.round(b)];
          },
-         
+
          RGB2HSV : function(r, g, b) {
             if (typeof r == 'object') {var b=r[2],g=r[1];r=r[0]}
             var n = Math.min(Math.min(r,g),b), v = Math.max(Math.max(r,g),b), m = v - n;
@@ -217,10 +217,10 @@ $( function(){
 
          getOrigin : function(obj) {
             var parent=box=null, pos=[];
-            
+
 
             if (obj.parentNode === null || jscolor.getStyle('display', obj) == 'none') return false;
-            
+
             if (obj.getBoundingClientRect) { // IE
                 box = obj.getBoundingClientRect();
                 var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
@@ -261,7 +261,7 @@ $( function(){
             else return [e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - relC[0],
                                e.clientY + document.body.scrollTop  + document.documentElement.scrollTop - relC[1]];
          },
-         
+
          addEvent : function(obj, type, func) {
             if (!obj || !type || !func) return false;
             if (obj == window && type == 'load') {jscolor.addWinEvent(obj, type, func); return false;}
@@ -270,10 +270,10 @@ $( function(){
             if (obj.addEventListener) obj.addEventListener(type, func, false);
             else obj.attachEvent("on" + type, func);
          },
-         
+
          addWinEvent : function(obj, type, func) {
             if(typeof window.addEventListener != 'undefined') window.addEventListener(type, func, false);
-            else if(typeof document.addEventListener != 'undefined') document.addEventListener(type, func, false); //.. opera 
+            else if(typeof document.addEventListener != 'undefined') document.addEventListener(type, func, false); //.. opera
             else if(typeof window.attachEvent != 'undefined') window.attachEvent('on' + type, func);
             else {
                if(typeof window.onload == 'function') {
@@ -285,7 +285,7 @@ $( function(){
                } else window.onload = func;
             }
          },
-         
+
          removeEvent : function(obj, type, func) {
             if (!obj || !type) return false;
             if (!func && !obj.funcCache[type]) return false;
@@ -293,21 +293,21 @@ $( function(){
             else obj.detachEvent("on" + type, func||obj.funcCache[type]);
          }
       };
-      
+
       var invalid = 'nyan!';
       // find elements
       var inputs = $('input[type="color"]');
-      
+
       // check if input elements on page and wether they behaves correctly
       if( inputs.size() > 0 ){
          var testElement = inputs[0];
          var oldVal = testElement.value;
          testElement.value = invalid;
-         
+
          // value should be rejected if element is supported
          var supported =  testElement.value !== invalid;
          testElement.value = oldVal;
-         if( !supported ){    
+         if( !supported ){
             inputs.addClass('textHidden');
             jscolor.addEvent(window, 'load', jscolor.init);
          }

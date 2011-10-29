@@ -1,6 +1,6 @@
 h1. dizzy.js
 
-dizzy.js enables you to create non-linear presentations similiar to 
+dizzy.js enables you to create non-linear presentations similiar to
 "Prezi":http://prezi.com, without using Flash or some other proprietary technology.
 
 For a quick start, try using presenter.html, appending the path of one of the examples as the URL hash.
@@ -23,7 +23,7 @@ var dizz = new Dizzy('#dizzy', {pannable: true, transformTime: 1000});
 Afterwards you can load a new SVG-file with:
 dizz.load('./file.svg');
 optional pass a callback:
-dizz.load('./file.svg', 
+dizz.load('./file.svg',
 	function(){ // gets executed once file.svg has been loaded.
 		dizz.show(0); // display canvas untransformed.
 	} );

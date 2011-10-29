@@ -1,38 +1,38 @@
 /*
- * dizzy.js 
+ * dizzy.js
  * http://dizzy.metafnord.org
- * 
+ *
  * Version: 0.5.0
  * Date: 04/14/2011
- * 
+ *
  * licensed under the terms of the MIT License
  * http://www.opensource.org/licenses/mit-license.html
  */
- 
+
  var Dizzy = (function(window, document, D, undefined){
    /*
       Private members
    */
    var plugins = {};
-   var stateBackup = {};   
+   var stateBackup = {};
    /*
       Create inherited class with public members
    */
    var DizzyPluginManager = D.extend({
-      
-      
+
+
       init : function(){
          this._super.apply(this, arguments);
          for( p in plugins ){
             p.state = false;
          }
       },
-      
+
       /**
        * Registers plugin. If there is already a plugin with that name, this will do nothing.
        */
-      
-      
+
+
       /**
        * Calls either initialize() or finalize() on plugin.
        */
@@ -43,7 +43,7 @@
             console.warn("Requested plugin '"+name+"' not registered in dizzy!");
          }else{
             var dependencies = plug.depends;
-            
+
             plug.dependencies = {};
             for( var i in dependencies ){
                var plugin = this.setPluginState(dependencies[i], value, plug.options[dependencies[i]]);
@@ -51,7 +51,7 @@
                   plug.dependencies[plugin.name] = plugin;
                }
             }
-            
+
             /*
              * call the corresponding method. First set the prototype, so the plugin can access methods of the dizzy object
              */
@@ -69,9 +69,9 @@
             }
             return plug;
          }
-         
+
       },
-      
+
       /**
        * Disables the current plugin and enables the plugin with the given name, if present.
        */
@@ -82,18 +82,18 @@
          }
          return this.setPluginState(name, true);
       },
-      
+
       savePluginState : function(){
          this.stateBackup = this.activePlugin;
       },
-      
+
       restorePluginState : function(){
          this.switchPlugin(this.stateBackup);
       }
-      
-      
+
+
    });
-   
+
    DizzyPluginManager.registerPlugin = function(p){
       if( isUndefined(plugins[p.name]) ){
          p.options = p.options || {};
@@ -101,6 +101,6 @@
          //this.setPluginState(p.name, false);
       }
    };
-    
+
    return DizzyPluginManager;
  })(window, document, Dizzy);
