@@ -1,4 +1,4 @@
-html, body { 
+html, body {
 	font: 14px Verdana;
 }
 
@@ -19,27 +19,27 @@ a, a:active, a:link{
 
 	width: 98%;
 	background: #DDDDDD;
-	
+
 	/* Firefox 3.6+ */
     background: -moz-linear-gradient(100% 100% 90deg,  #CFCFCF, #DDDDDD);
     /* Safari 4+, Chrome 1+ */
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#DDDDDD), to(#CFCFCF));
     /* Safari 5.1+, Chrome 10+ */
-    background: -webkit-linear-gradient(#DDDDDD, #CFCFCF); 
+    background: -webkit-linear-gradient(#DDDDDD, #CFCFCF);
     /* Opera 11.10+ */
     background: -o-linear-gradient(top, #DDDDDD, #CFCFCF);
-	
-	
+
+
 	border: 1px solid #AAAAAA;
 	-webkit-border-radius: 10px;
 	-moz-border-radius: 10px;
 	border-radius: 10px;
-	
+
 	margin-bottom: 1%;
 	padding: 1%;
-	
+
 	cursor: pointer;
-	
+
 	font-size: 0.9em;
 }
 
@@ -54,7 +54,7 @@ ul > li > ul{
 }
 
 h1{
-	
+
 }
 
 h2{
@@ -66,7 +66,7 @@ hr{
 	border: 1px solid #9A9A9A;
 	border-bottom: 1px solid #EEEEEE;
 	border-right: 1px solid #EEEEEE;
-	
+
 }
 
 #menu fieldset{
@@ -77,8 +77,8 @@ hr{
 	position: absolute;
 	top: 0;
 	left: 0;
-	overflow: hidden !important; /* FF Scroll-leiste */ 
-	
+	overflow: hidden !important; /* FF Scroll-leiste */
+
 }
 
 #dizzy g.group:hover{
@@ -103,10 +103,10 @@ hr{
 	top: 5%;
 	left: 1%;
 
-	
+
 	box-sizing: border-box;
-	
-	
+
+
 	overflow: visible;
 }
 
@@ -124,13 +124,13 @@ hr{
 #toolbar{
 	float: left;
 	overflow: visible;
-	
+
 	-ms-transition: 0.8s opacity ease-in-out;
 	-o-transition: 0.8s opacity ease-in-out;
 	-webkit-transition: 0.8s opacity ease-in-out;
 	-moz-transition: 0.8s opacity ease-in-out;
 	transition: 0.8s opacity ease-in-out;
-	
+
 	opacity: 1;
 }
 
@@ -140,13 +140,13 @@ hr{
 
 .toolbutton, #toolbar, #zebra-toolbar  {
 	background: #AAAAAA;
-	
+
 }
 
 .toolbutton{
 	float: left;
 
-	
+
 	font-weight: bold;
 	text-align:center;
 }
@@ -156,11 +156,11 @@ hr{
 #toolbar > .toolbutton {
 	width: 42px;
 	height: 42px;
-	
+
 	border: 1px solid black;
-	
+
 	line-height: 42px;
-	
+
 	font-size: 13px;
 }
 .toolbutton.pressed, .toolbutton.pressed:hover{
@@ -173,7 +173,7 @@ hr{
 }
 
 .toolbutton:hover {
-	cursor: pointer;	
+	cursor: pointer;
 }
 
 .toolbutton img{
@@ -236,7 +236,7 @@ input[type="color"]{
  */
 #toolbar > .toolbutton.fullwidth {
 	width: 85px; /* +1 because all other buttons have a 1pxborder between them */
-	
+
 	height: 34px;
 	line-height: 34px;
 }
@@ -245,31 +245,31 @@ input[type="color"]{
  */
 #toolbar > #menu-button{
 	overflow: visible;
-	
+
 	color: #FFFFFF;
-	
+
 	background-color: #990000;
     /* Firefox 3.6+ */
     background: -moz-linear-gradient(5% 80% 90deg, #770000, #BB0000);
     /* Safari 4+, Chrome 1+ */
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#BB0000), to(#770000));
     /* Safari 5.1+, Chrome 10+ */
-    background: -webkit-linear-gradient(#BB0000, #770000); 
+    background: -webkit-linear-gradient(#BB0000, #770000);
     /* Opera 11.10+ */
     background: -o-linear-gradient(top, #BB0000, #770000);
 }
 #toolbar > #menu-button:hover{
 	overflow: visible;
-	
+
 	color: #FFFFF;
-	
+
 	background-color: #AA0000;
     /* Firefox 3.6+ */
     background-image: -moz-linear-gradient(5% 80% 90deg, #880000, #CC0000);
     /* Safari 4+, Chrome 1+ */
     background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#CC0000), to(#880000));
     /* Safari 5.1+, Chrome 10+ */
-    background-image: -webkit-linear-gradient(#CC0000, #880000); 
+    background-image: -webkit-linear-gradient(#CC0000, #880000);
     /* Opera 11.10+ */
     background-image: -o-linear-gradient(top, #CC0000, #880000);
 }
@@ -285,7 +285,7 @@ input[type="color"]{
     /* Safari 4+, Chrome 1+ */
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#CCCCCC), to(#999999));
     /* Safari 5.1+, Chrome 10+ */
-    background: -webkit-linear-gradient(#CCCCCC, #999999); 
+    background: -webkit-linear-gradient(#CCCCCC, #999999);
     /* Opera 11.10+ */
     background: -o-linear-gradient(top, #CCCCCC, #999999);
 }
@@ -299,7 +299,7 @@ input[type="color"]{
     /* Safari 4+, Chrome 1+ */
     background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#DDDDDD), to(#AAAAAA));
     /* Safari 5.1+, Chrome 10+ */
-    background-image: -webkit-linear-gradient(#DDDDDD, #AAAAAA); 
+    background-image: -webkit-linear-gradient(#DDDDDD, #AAAAAA);
     /* Opera 11.10+ */
     background-image: -o-linear-gradient(top, #DDDDDD, #AAAAAA);
 }
@@ -317,35 +317,35 @@ input[type="color"]{
 #menu > * {
 	border: 1px solid black;
 	border-left: 0;
-	
+
 	border-radius: 2px;
 	-moz-border-radius: 2px;
-	
+
 	background: #FFF;
 }
 
 #menu > #menu-left{
 	float: left;
-	
+
 	width: 60%;
-	
+
 	padding: 0;
 	padding-right: 1%;
-	
 
-	
+
+
 	box-sizing:inherit;
-	
-	
+
+
 }
 
 #menu > #menu-right{
 	float: left;
 	width: 25%;
-	
+
 	box-sizing:inherit;
 	padding: 1%;
-	
+
 	overflow: hidden;
 }
 
@@ -377,10 +377,10 @@ input[type="color"]{
 	position: absolute;
 	top: 30%;
 	left: 50%;
-	
+
 	width: 100px;
 	height: 100px;
-	
+
 	display: none;
 }
 
@@ -392,18 +392,18 @@ input[type="color"]{
 
 #zebra #zebra-translate{
 	position: absolute;
-	
+
 	top: 2px;
 	left: 2px;
 	width: 60px;
 	height: 60px;
 	background-image: url('../images/bg_zebra_translate.png');
 
-	
+
 
 	-moz-border-radius: 100%;
 	border-radius: 100%;
-	
+
 	cursor: move;
 
 }
@@ -411,13 +411,13 @@ input[type="color"]{
 
 #zebra #zebra-scale{
 	position: absolute;
-	
+
 	top: 3px;
 	left: 3px;
 	width: 64px; /* 100px - (3 [margins] + 12 [border])*2 */
 	height: 64px;
 	background: transparent;
-	
+
 	border: 15px solid #CCCCCC;
 
 	-moz-border-radius: 92px;
@@ -428,20 +428,20 @@ input[type="color"]{
 
 #zebra #zebra-rotate{
 	position: absolute;
-	
+
 	top: 0;
 	left: 0;
-	
+
 	width: 100px;
 	height: 100px;
 	background: transparent;
-	
+
 	border: 20px dotted #AAAAAA;
-	
+
 	-moz-border-radius: 100px;
 	border-radius: 100px;
-	
-		
+
+
 
 }
 
@@ -449,11 +449,11 @@ input[type="color"]{
 	position: absolute;
 	right: -40px;
 	top: 58px;
-	
+
 	width: 16px;
 	height: 16px;
 
-	
+
 	text-align: center;
 	font-weight: bolder;
 	font-size: 16px;
@@ -465,7 +465,7 @@ input[type="color"]{
 
 	-moz-border-radius: 12px;
 	border-radius: 12px;
-	
+
 	cursor: pointer;
 }
 #zebra #zebra-expand-button:hover{
@@ -485,20 +485,20 @@ input[type="color"]{
 
 #zebra #zebra-toolbar{
 	position: absolute;
-	
+
 	top: 52px;
 	left: 145px;
-	
+
 	width: 66px;
 
-	
+
 	border: 1px solid black;
 }
 
 #zebra #zebra-toolbar  .toolbutton{
 	width: 32px;
 	height: 32px;
-	
+
 	line-height: 32px;
 }
 
@@ -532,13 +532,13 @@ input[type="color"]{
 
 #overlay{
 	position: absolute;
-	
+
 	top: 0;
 	left: 0;
-	
+
 	width: 100%;
 	height: 100%;
-	
+
 	background: rgba(0,0,0,0.6);
 }
 #overlay a{
@@ -549,7 +549,7 @@ input[type="color"]{
 #overlay .overlay-dialog{
 	background: #FFFFFF;
 	border: 1px solid black;
-	
+
 	padding: 1%;
 }
 
@@ -557,7 +557,7 @@ input[type="color"]{
 	position: absolute;
 	top: 25%;
 	left: 30%;
-	
+
 	width: 40%;
 }
 
